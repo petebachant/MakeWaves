@@ -43,8 +43,9 @@ def stroke2volts(stroke):
 class Wave(object):
     def __init__(self, wavetype):
         self.wavetype = wavetype
-        self.sr = 200.0
-        self.buffsize = 65536
+        self.sr = 1024.0
+        self.buffsize = 65538
+        self.sbuffsize = 1024
         
         if self.wavetype == "Regular":
             self.height = 0.1
@@ -66,13 +67,13 @@ class Wave(object):
     def gen_ts(self):
         if self.wavetype == "Regular":
             """Generate a regular wave time series"""
-            self.buffsize = 1000
-            self.sr = self.buffsize/self.period
+            self.sr = self.sbuffsize/self.period
             
-            t = np.linspace(0, 2*pi, self.buffsize)
+            t = np.linspace(0, 2*pi, self.sbuffsize)
             self.ts = self.height/2*np.sin(t)
             
         else:
+            """Generate random wave time series"""
             nfreq = self.buffsize/2 
             f_start = self.sr/self.buffsize
             f_end = self.sr/2
@@ -113,18 +114,18 @@ class Wave(object):
         f, spec = timeseries.psd(t, self.ts, window=None)
         return f, spec
         
-    def gen_ramp_ts_volts(self, direction):
-        y = self.ts_volts
-        rampfull = np.ones(len(y))
-        ramp = np.hanning(len(y))
+
+def ramp_ts(ts, direction):
+    rampfull = np.ones(len(ts))
+    ramp = np.hanning(len(ts))
+    
+    if direction == "up":
+        rampfull[:len(ramp)/2] = ramp[:len(ramp)/2]
         
-        if direction == "up":
-            rampfull[:len(ramp)/2] = ramp[:len(ramp)/2]
-            
-        elif direction == "down":
-            rampfull[-len(ramp)/2:] = ramp[len(ramp)/2:]
-            
-        return y*rampfull
+    elif direction == "down":
+        rampfull[-len(ramp)/2:] = ramp[len(ramp)/2:]
+        
+    return ts*rampfull
 
 
 def main():

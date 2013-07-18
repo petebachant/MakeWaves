@@ -14,7 +14,7 @@ import wavemakerlimits as wml
 import numpy as np
 import daqmx
 import time
-from wavetsgen import Wave
+from wavetsgen import Wave, ramp_ts
 
 
 # Spectral parameters for random waves
@@ -124,8 +124,8 @@ class MainWindow(QtGui.QMainWindow):
         self.initialize_plots()
         
         # Add dock widgets to right dock widget area and tabify them
-        self.tabifyDockWidget(self.ui.dock_spectrum,
-                              self.ui.dock_time_series)
+        self.tabifyDockWidget(self.ui.dock_time_series,
+                              self.ui.dock_spectrum)
                
     
     def initialize_plots(self):
@@ -176,7 +176,7 @@ class MainWindow(QtGui.QMainWindow):
     def update_plot(self):
         # Plot output time series
         if self.wavegen.making:
-            ydata = self.wavegen.dataw
+            ydata = self.wavegen.ts_plot
             xdata = np.asarray(np.arange(len(ydata))/self.wavegen.sr)
             self.plot_ts.setAxisScale(Qwt.QwtPlot.xBottom, 0, xdata[-1])
             self.curve_ts.setData(xdata, ydata)
@@ -279,6 +279,7 @@ class MainWindow(QtGui.QMainWindow):
         if self.ui.action_start.isChecked() == True:
             """Make waves"""
             self.ui.action_start.setText("Stop ")
+            self.ui.action_start.setToolTip("Stop Generating Waves")
             self.ui.action_start.setIcon(QIcon(":icons/agt_stop.png"))
             self.ui.tabwidget.setEnabled(False)
             
@@ -300,11 +301,10 @@ class MainWindow(QtGui.QMainWindow):
                 """Create random waves."""
                 rspec = self.ui.combobox_randwavetype.currentText()
                 self.slabel.setText("Generating " + rspec + " waves... ")
-                
                 self.wavegen = self.WaveGen(rspec)
                 self.wavegen.start()
                 
-#            self.timer.start(100)              
+            self.timer.start(500)              
                 
             
         elif self.ui.action_start.isChecked() == False:
@@ -321,6 +321,7 @@ class MainWindow(QtGui.QMainWindow):
         self.update_plot()
         self.slabel.setText("Stopped ")
         self.ui.action_start.setText("Start")
+        self.ui.action_start.setToolTip("Start Generating Waves")
         self.ui.action_start.setIcon(QIcon(":icons/play.png"))
         self.ui.action_start.setEnabled(True)
         self.ui.tabwidget.setEnabled(True)
@@ -357,23 +358,33 @@ class MainWindow(QtGui.QMainWindow):
             self.rampeddown = False
             self.cleared = False
             self.making = False
-            self.period = self.wave.period
-            self.height = self.wave.height
+            
             # Compute the voltage time series associated with the wave
             self.wave.gen_ts_volts()
+            
             # Get parameters from the wave object
-            self.buffsize = self.wave.buffsize
+            self.period = self.wave.period
+            self.height = self.wave.height
+            self.buffsize = self.wave.sbuffsize
             self.sr = self.wave.sr
             
             # Get data to write from the wave object
+            self.ts_plot = self.wave.ts
             self.dataw = self.wave.ts_volts
+            
+            # If random waves, divide up time series into 64 parts
+            if self.wavetype != "Regular":
+                tsparts = np.zeros((64, 1024))
+                for n in range(64):
+                    tsparts[n, :] = self.dataw[n*1024:(n+1)*1024]
+                    
+                self.dataw = tsparts[0, :]
             
             # Compute spectrum for plot
             self.outf, self.outspec = self.wave.comp_spec()
             
             # Ramp time series
-            rampup_ts = self.wave.gen_ramp_ts_volts("up")
-            self.rampdown_ts = self.wave.gen_ramp_ts_volts("down")
+            rampup_ts = ramp_ts(self.dataw, "up")
             
             # Set making variable true
             self.making = True
@@ -384,7 +395,7 @@ class MainWindow(QtGui.QMainWindow):
                                       -1.0, 1.0, daqmx.Val_Volts, None)
             daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr, 
                                    daqmx.Val_Rising, daqmx.Val_ContSamps, 
-                                   self.buffsize*2)
+                                   self.buffsize)
                                    
             daqmx.SetWriteRegenMode(self.AOtaskHandle, 
                                     daqmx.Val_DoNotAllowRegen)
@@ -403,15 +414,30 @@ class MainWindow(QtGui.QMainWindow):
                                            
             daqmx.StartTask(self.AOtaskHandle)
             
+            time.sleep(self.period*0.9)
+
+            i = 1
+            
             while self.enable:
                 writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
                 print "Available:", writeSpaceAvail
-                if writeSpaceAvail >= self.buffsize/2:
+                
+                if writeSpaceAvail >= self.buffsize:
+                    
+                    if self.wavetype != "Regular":
+                        if i > 64:
+                            self.dataw = tsparts[64 % i, :]
+                        else: self.dataw = tsparts[i, :]
+                    
                     w = daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                              daqmx.Val_GroupByChannel, self.dataw)
                     print "Wrote", w
-                time.sleep(0.1)
-                       
+                    print "Iteration:", i
+                    i += 1
+                    
+                time.sleep(self.period)
+            
+            self.rampdown_ts = ramp_ts(self.dataw, "down")
             daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                      daqmx.Val_GroupByChannel, self.rampdown_ts)
             
@@ -423,7 +449,7 @@ class MainWindow(QtGui.QMainWindow):
 #            daqmx.StopTask(self.AOtaskHandle)
             daqmx.ClearTask(self.AOtaskHandle)   
             self.cleared = True
-            print "Tasks cleared"
+            print "Task cleared"
 
 
     class WaveStop(QtCore.QThread):
@@ -434,14 +460,10 @@ class MainWindow(QtGui.QMainWindow):
         def run(self):
             self.wavegen.enable = False
             print "Waiting to ramp down"
-            self.wavegen.rampeddown = True
             
-#            while not self.wavegen.rampeddown:
-#                time.sleep(0.1)
-            
-            print "Not waiting anymore"
+            while not self.wavegen.rampeddown:
+                time.sleep(0.2)
                
-            
     
 
 def main():

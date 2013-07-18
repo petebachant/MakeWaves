@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
+    <width>618</width>
     <height>331</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>618</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MakeWaves</string>
@@ -449,11 +455,11 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QDockWidget" name="dock_time_series">
+   <widget class="QDockWidget" name="dock_spectrum">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>580</y>
+      <y>290</y>
       <width>325</width>
       <height>256</height>
      </rect>
@@ -470,11 +476,14 @@
       <height>256</height>
      </size>
     </property>
-    <property name="windowTitle">
-     <string>Output Time Series</string>
+    <property name="floating">
+     <bool>false</bool>
     </property>
-    <widget class="QWidget" name="dockWidgetContents_2">
-     <widget class="QwtPlot" name="plot_ts">
+    <property name="windowTitle">
+     <string>Output Spectrum</string>
+    </property>
+    <widget class="QWidget" name="dockWidgetContents">
+     <widget class="QwtPlot" name="plot_spec">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -495,7 +504,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>614</width>
+     <width>618</width>
      <height>21</height>
     </rect>
    </property>
@@ -553,7 +562,7 @@
    </attribute>
    <addaction name="action_start"/>
   </widget>
-  <widget class="QDockWidget" name="dock_spectrum">
+  <widget class="QDockWidget" name="dock_time_series">
    <property name="minimumSize">
     <size>
      <width>325</width>
@@ -566,17 +575,14 @@
      <height>256</height>
     </size>
    </property>
-   <property name="floating">
-    <bool>false</bool>
-   </property>
    <property name="windowTitle">
-    <string>Output Spectrum</string>
+    <string>Output Time Series</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <widget class="QwtPlot" name="plot_spec">
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <widget class="QwtPlot" name="plot_ts">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -660,13 +666,15 @@
    <property name="toolTip">
     <string>Start Generating Waves</string>
    </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
   </action>
   <action name="actionRecording">
    <property name="text">
     <string>Recording...</string>
    </property>
   </action>
-  <zorder>dock_measure</zorder>
  </widget>
  <customwidgets>
   <customwidget>
