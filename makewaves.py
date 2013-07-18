@@ -14,7 +14,7 @@ import wavemakerlimits as wml
 import numpy as np
 import daqmx
 import time
-from wavetsgen import Wave, elev2stroke, stroke2volts
+from wavetsgen import Wave
 
 
 # Spectral parameters for random waves
@@ -94,31 +94,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.statusbar.addWidget(self.slabel)
         self.slabel.setText("Stopped ")
         
-        # Add file path combobox to toolbar
-        self.line_edit_fpath = QLineEdit()
-        self.ui.toolbar_main.addWidget(self.line_edit_fpath)
-        self.fpath = "C:\temp"
-        self.line_edit_fpath.setText("C:\\temp")
-        self.toolbutton_fpath = QToolButton()
-        self.ui.toolbar_main.addWidget(self.toolbutton_fpath)
-        self.toolbutton_fpath.setIcon(QIcon(":icons/folder_yellow.png"))
-        
-        # Add file name and extension controls to toolbar
-        self.line_edit_fname = QLineEdit()
-        self.ui.toolbar_main.addWidget(self.line_edit_fname)
-        self.line_edit_fname.setFixedWidth(50)
-        self.line_edit_fname.setText("run")
-        
-        self.spinbox_run = QSpinBox()
-        self.ui.toolbar_main.addWidget(self.spinbox_run)
-        self.spinbox_run.setValue(1)
-        
-        self.combobox_ftype = QComboBox()
-        self.ui.toolbar_main.addWidget(self.combobox_ftype)
-        self.combobox_ftype.addItem("*.npy")
-        self.combobox_ftype.addItem("*.csv")
-        self.combobox_ftype.addItem("*.mat")
-        
         # Set up a timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.on_timer)
@@ -149,12 +124,8 @@ class MainWindow(QtGui.QMainWindow):
         self.initialize_plots()
         
         # Add dock widgets to right dock widget area and tabify them
-        self.tabifyDockWidget(self.ui.dock_measure,
+        self.tabifyDockWidget(self.ui.dock_spectrum,
                               self.ui.dock_time_series)
-        self.tabifyDockWidget(self.ui.dock_measure,
-                              self.ui.dock_spectrum)
-        self.tabifyDockWidget(self.ui.dock_time_series,
-                             self.ui.dock_measure)
                
     
     def initialize_plots(self):
@@ -170,19 +141,6 @@ class MainWindow(QtGui.QMainWindow):
         self.pen.setWidth(0)
         self.curve_ts.setPen(self.pen)
         self.curve_ts.attach(self.plot_ts)
-        
-        # Create measurement plot
-        self.plot_meas = self.ui.plot_meas
-        self.plot_meas.setCanvasBackground(Qt.white)
-        self.grid = Qwt.QwtPlotGrid()
-        self.grid.attach(self.plot_meas)
-        self.grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
-        self.curve_meas = Qwt.QwtPlotCurve('')
-        self.curve_meas.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
-        self.pen = QPen(QColor('black'))
-        self.pen.setWidth(0)
-        self.curve_meas.setPen(self.pen)
-        self.curve_meas.attach(self.plot_meas)
         
         # Create output spectrum plot
         self.plot_spec = self.ui.plot_spec
@@ -209,33 +167,13 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_wiki.triggered.connect(self.on_wiki)
         self.ui.slider_height.sliderMoved.connect(self.on_slider_height)
         self.ui.slider_horiz.sliderMoved.connect(self.on_slider_horiz)
-        self.toolbutton_fpath.clicked.connect(self.on_toolbutton_fpath)
-        
     
-    def on_toolbutton_fpath(self):
-        self.fpath = QFileDialog.getExistingDirectory()
-        if self.fpath:
-            self.line_edit_fpath.setText(self.fpath)
-        self.fpath = self.line_edit_fpath.text()
-        print self.fpath
         
     def on_timer(self):
         self.update_plot()
         
         
     def update_plot(self):
-        # Update measurement plot
-        ydata = self.daq.npdata[1:]
-        xdata = np.asarray(np.arange(len(ydata))/self.daq.sr)
-        if len(ydata) == 0: 
-            ydata = [np.nan]
-            xdata = [np.nan]
-            
-        self.plot_meas.setAxisScale(Qwt.QwtPlot.xBottom, 
-                                    max(0, xdata[-1]-5), max(xdata[-1], 5))
-        self.curve_meas.setData(xdata, ydata)
-        self.plot_meas.replot()
-        
         # Plot output time series
         if self.wavegen.making:
             ydata = self.wavegen.dataw
@@ -366,10 +304,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.wavegen = self.WaveGen(rspec)
                 self.wavegen.start()
                 
-                
-            self.daq = self.DataAq()
-            self.daq.start()
-            self.timer.start(100)              
+#            self.timer.start(100)              
                 
             
         elif self.ui.action_start.isChecked() == False:
@@ -378,17 +313,10 @@ class MainWindow(QtGui.QMainWindow):
             self.wavestop = self.WaveStop(self.wavegen)
             self.wavestop.finished.connect(self.on_wave_finished)
             self.wavestop.start()
-            # also stop recording
-            self.ui.action_record.setChecked(False)
             self.ui.action_start.setEnabled(False)
-            
-    def on_record(self):
-        self.line_edit_fpath.setEnabled(False)
-        self.toolbutton_fpath.setEnabled(False)
 
             
     def on_wave_finished(self):
-        self.daq.stop()
         self.timer.stop()
         self.update_plot()
         self.slabel.setText("Stopped ")
@@ -396,8 +324,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_start.setIcon(QIcon(":icons/play.png"))
         self.ui.action_start.setEnabled(True)
         self.ui.tabwidget.setEnabled(True)
-        self.line_edit_fpath.setEnabled(True)
-        self.toolbutton_fpath.setEnabled(True)
+        self.wavegen.clear()
         
         
     def on_about(self):
@@ -427,6 +354,7 @@ class MainWindow(QtGui.QMainWindow):
             self.enable = True
             
         def run(self):
+            self.rampeddown = False
             self.cleared = False
             self.making = False
             self.period = self.wave.period
@@ -477,12 +405,12 @@ class MainWindow(QtGui.QMainWindow):
             
             while self.enable:
                 writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-                if writeSpaceAvail > self.buffsize/2:
+                print "Available:", writeSpaceAvail
+                if writeSpaceAvail >= self.buffsize/2:
                     w = daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                              daqmx.Val_GroupByChannel, self.dataw)
-                print "Wrote", w
-                print "Available:", writeSpaceAvail
-                time.sleep(1)
+                    print "Wrote", w
+                time.sleep(0.1)
                        
             daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                      daqmx.Val_GroupByChannel, self.rampdown_ts)
@@ -490,7 +418,12 @@ class MainWindow(QtGui.QMainWindow):
             while True:
                 pass
             
-
+            
+        def clear(self):
+#            daqmx.StopTask(self.AOtaskHandle)
+            daqmx.ClearTask(self.AOtaskHandle)   
+            self.cleared = True
+            print "Tasks cleared"
 
 
     class WaveStop(QtCore.QThread):
@@ -501,77 +434,14 @@ class MainWindow(QtGui.QMainWindow):
         def run(self):
             self.wavegen.enable = False
             print "Waiting to ramp down"
-            print self.wavegen.rampeddown
+            self.wavegen.rampeddown = True
             
-            while not self.wavegen.rampeddown:
-                print "Still waiting..."
-                time.sleep(0.5)
-                
-            print self.wavegen.rampeddown
-            daqmx.StopTask(self.wavegen.AOtaskHandle)
-            daqmx.ClearTask(self.wavegen.AOtaskHandle)
-            self.cleared = True
-                
+#            while not self.wavegen.rampeddown:
+#                time.sleep(0.1)
             
-                   
-    class DataAq(QtCore.QThread):
-        def __init__(self):
-            QtCore.QThread.__init__(self)
-            self.npdata = np.array([])
-            self.sr = 200.0
+            print "Not waiting anymore"
+               
             
-        def run(self):
-            self.cleared = False
-            self.AItaskHandle = daqmx.TaskHandle()
-            daqmx.CreateTask("", self.AItaskHandle)
-            daqmx.CreateAIVoltageChan(self.AItaskHandle, "Dev1/ai1", "", 
-                                      daqmx.Val_Diff, -1.0, 1.0, 
-                                      daqmx.Val_Volts, None)
-            daqmx.CfgSampClkTiming(self.AItaskHandle, "", self.sr, 
-                                   daqmx.Val_Rising, daqmx.Val_ContSamps, 
-                                   20)
-                                   
-            class MyList(list):
-                pass
-            
-            # list where the data are stored
-            data = MyList()
-            id_data = daqmx.create_callbackdata_id(data)
-            
-            def EveryNCallback_py(taskHandle, everyNsamplesEventType, nSamples, 
-                                  callbackData_ptr):
-                                      
-                callbackdata = daqmx.get_callbackdata_from_id(callbackData_ptr)
-                
-                data, npoints = daqmx.ReadAnalogF64(taskHandle, 20, 10.0, 
-                                                    daqmx.Val_GroupByChannel, 20, 1)
-                                   
-                callbackdata.extend(data.tolist())
-                self.npdata = np.append(self.npdata, data)
-                return 0 # The function should return an integer
-                
-            # Convert the python function to a CFunction
-            EveryNCallback = daqmx.EveryNSamplesEventCallbackPtr(EveryNCallback_py)
-            
-            daqmx.RegisterEveryNSamplesEvent(self.AItaskHandle, daqmx.Val_Acquired_Into_Buffer,
-                                             20, 0, EveryNCallback, id_data)
-                
-            def DoneCallback_py(taskHandle, status, callbackData_ptr):
-                print "Status", status.value
-                return 0
-                
-            DoneCallback = daqmx.DoneEventCallbackPtr(DoneCallback_py)
-            daqmx.RegisterDoneEvent(self.AItaskHandle, 0, DoneCallback, None) 
-
-            daqmx.StartTask(self.AItaskHandle)
-
-            while True:
-                pass
-            
-        def stop(self):
-            daqmx.StopTask(self.AItaskHandle)
-            daqmx.ClearTask(self.AItaskHandle)
-            self.cleared = True
     
 
 def main():

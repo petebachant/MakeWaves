@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>614</width>
-    <height>340</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -449,49 +449,6 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QDockWidget" name="dock_spectrum">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>300</y>
-      <width>325</width>
-      <height>256</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>325</width>
-      <height>256</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>325</width>
-      <height>256</height>
-     </size>
-    </property>
-    <property name="floating">
-     <bool>false</bool>
-    </property>
-    <property name="windowTitle">
-     <string>Output Spectrum</string>
-    </property>
-    <widget class="QWidget" name="dockWidgetContents">
-     <widget class="QwtPlot" name="plot_spec">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>291</width>
-        <height>201</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
-      </property>
-     </widget>
-    </widget>
-   </widget>
    <widget class="QDockWidget" name="dock_time_series">
     <property name="geometry">
      <rect>
@@ -568,7 +525,6 @@
      <string>Settings</string>
     </property>
     <addaction name="action_editsettings"/>
-    <addaction name="actionRecording"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -596,26 +552,31 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_start"/>
-   <addaction name="action_record"/>
   </widget>
-  <widget class="QDockWidget" name="dock_measure">
+  <widget class="QDockWidget" name="dock_spectrum">
    <property name="minimumSize">
     <size>
      <width>325</width>
-     <height>265</height>
+     <height>256</height>
     </size>
    </property>
-   <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
+   <property name="maximumSize">
+    <size>
+     <width>325</width>
+     <height>256</height>
+    </size>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
    </property>
    <property name="windowTitle">
-    <string>Measured Values</string>
+    <string>Output Spectrum</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
-    <widget class="QwtPlot" name="plot_meas">
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QwtPlot" name="plot_spec">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -664,7 +625,7 @@
   </action>
   <action name="action_wiki">
    <property name="text">
-    <string>Tow Tank Wiki</string>
+    <string>Wiki</string>
    </property>
   </action>
   <action name="action_about">
@@ -698,24 +659,6 @@
    </property>
    <property name="toolTip">
     <string>Start Generating Waves</string>
-   </property>
-  </action>
-  <action name="action_record">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons/resources.qrc">
-     <normaloff>:/icons/record.png</normaloff>:/icons/record.png</iconset>
-   </property>
-   <property name="text">
-    <string>Record</string>
-   </property>
-   <property name="toolTip">
-    <string>Enable Data Recording</string>
    </property>
   </action>
   <action name="actionRecording">
