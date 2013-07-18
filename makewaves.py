@@ -425,9 +425,10 @@ class MainWindow(QtGui.QMainWindow):
                 if writeSpaceAvail >= self.buffsize:
                     
                     if self.wavetype != "Regular":
-                        if i > 64:
-                            self.dataw = tsparts[64 % i, :]
-                        else: self.dataw = tsparts[i, :]
+                        if i >= 64:
+                            self.dataw = tsparts[i % 64, :]
+                        else: 
+                            self.dataw = tsparts[i, :]
                     
                     w = daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                              daqmx.Val_GroupByChannel, self.dataw)
@@ -437,7 +438,14 @@ class MainWindow(QtGui.QMainWindow):
                     
                 time.sleep(self.period)
             
-            self.rampdown_ts = ramp_ts(self.dataw, "down")
+            if self.wavetype != "Regular":
+                if i >= 64:
+                    self.rampdown_ts = ramp_ts(tsparts[i % 64, :], "down")
+                else:
+                    self.rampdown_ts = ramp_ts(tsparts[i, :], "down")
+            else:
+                self.rampdown_ts = ramp_ts(self.dataw, "down")
+                
             daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                      daqmx.Val_GroupByChannel, self.rampdown_ts)
             

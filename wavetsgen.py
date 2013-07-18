@@ -63,6 +63,15 @@ class Wave(object):
             self.gamma = 3.3
             self.sigma_A = 0.07
             self.sigma_B = 0.09
+        
+        elif self.wavetype == "NH Extreme":
+            self.sig_height = 6.58
+            self.sig_period = 10.5
+            self.scale_ratio = 15.2
+            self.gamma = 3.95
+            self.sigma_A = 0.45
+            self.sigma_B = 0.15
+            self.P = 4.85
             
     def gen_ts(self):
         if self.wavetype == "Regular":
@@ -99,6 +108,8 @@ class Wave(object):
                 self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
                 self.f**(-5)*np.exp(B)*self.gamma**A
                 self.ts = spec2ts(self.spec, self.sr)
+                self.period = self.sig_period
+                self.height = self.sig_height #Don't know about this...
             
             
     def gen_ts_stroke(self):
