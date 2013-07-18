@@ -6,8 +6,10 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
 Dependencies
 --------
   * Python 2.xx
-  * daqmx.py
+  * numpy
+  * matplotlib (for testing output of wavetsgen.py)
+  * daqmx.py (see misc_python)
   * PyDAQmx
-  * timeseries.py
+  * timeseries.py (see misc_python)
   * PyQt4
   * NI DAQmx driver
