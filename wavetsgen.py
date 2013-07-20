@@ -110,6 +110,9 @@ class Wave(object):
                 self.ts = spec2ts(self.spec, self.sr)
                 self.period = self.sig_period
                 self.height = self.sig_height #Don't know about this...
+
+            elif self.wavetype == "NH Extreme":
+                pass
                 
             elif self.wavetype == "NH Typical":
                 pass
