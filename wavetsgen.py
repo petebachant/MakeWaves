@@ -73,6 +73,20 @@ class Wave(object):
             self.sigma_B = 0.15
             self.P = 4.85
             
+        elif self.wavetype == "NH Typical":
+            self.sig_height = 1.21
+            self.sig_period = 10.0
+            self.sig_period2 = 5.34
+            self.scale_ratio = 15.2
+            self.gamma1 = 6.75
+            self.gamma2 = 0.5
+            self.P = 4.34
+            
+        elif self.wavetype == "Pierson-Moscowitz":
+            self.windspeed = 2.0
+            self.scale_ratio = 1.0
+
+            
     def gen_ts(self):
         if self.wavetype == "Regular":
             """Generate a regular wave time series"""
@@ -117,6 +131,9 @@ class Wave(object):
             elif self.wavetype == "NH Typical":
                 pass
             
+            elif self.wavetype == "Pierson-Moscowitz":
+                pass
+            
             
     def gen_ts_stroke(self):
         self.gen_ts()
@@ -147,7 +164,7 @@ def ramp_ts(ts, direction):
 
 def main():
     
-    wave = Wave("Bretschneider")
+    wave = Wave("JONSWAP")
     wave.gen_ts_volts()
     
     
