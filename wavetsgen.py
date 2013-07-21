@@ -5,6 +5,14 @@ Created on Tue Jun 18 18:48:22 2013
 @author: Pete
 
 This module generates various wave spectra and time series.
+
+Pierson-Moscowitz formula taken from:
+http://oceanworld.tamu.edu/resources/ocng_textbook/chapter16/chapter16_04.htm
+
+Needs:
+  * Scale ratio logic
+  * Correct elev2stroke calculation
+
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -29,6 +37,8 @@ def spec2ts(spec, sr):
 
 
 def elev2stroke(elev, waveheight, waveperiod):
+    """Computes piston stroke from elevation time series.
+    Still needs to be checked for random waves parameters."""
     k = dispsolver(2*pi/waveperiod, water_depth, 2)
     kh = k*water_depth
     factor = waveheight*paddle_height/2.0/water_depth
@@ -108,7 +118,6 @@ class Wave(object):
                 sig_height = self.sig_height
                 self.spec = 0.3125*sig_omega**4/omega**5*sig_height**2*\
                 np.exp(-5.0*sig_omega**4/(4.0*omega**4))
-                self.ts = spec2ts(self.spec, self.sr)
                 self.height = self.sig_height
                 self.period = self.sig_period
                 
@@ -121,7 +130,6 @@ class Wave(object):
                 B = -1.25*(self.sig_period*self.f)**(-4)
                 self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
                 self.f**(-5)*np.exp(B)*self.gamma**A
-                self.ts = spec2ts(self.spec, self.sr)
                 self.period = self.sig_period
                 self.height = self.sig_height #Don't know about this...
 
@@ -132,10 +140,21 @@ class Wave(object):
                 pass
             
             elif self.wavetype == "Pierson-Moscowitz":
-                pass
+                """Needs implementation of scale ratio"""
+                g = 9.81
+                omega_0 = g/self.windspeed
+                a = 8.1e-3
+                b = 0.74
+                self.spec = (a*g**2/omega**5)*np.exp(-b*(omega_0/omega)**4)
+                self.height = 0.21*self.windspeed**2/g
+                self.period = 2*pi*self.windspeed/(0.877*g)
+                
+            # Final step: compute time series    
+            self.ts = spec2ts(self.spec, self.sr)
             
             
     def gen_ts_stroke(self):
+        """Needs algorithm for random waves"""
         self.gen_ts()
         self.ts_stroke = elev2stroke(self.ts, self.height, self.period)
         
@@ -165,6 +184,9 @@ def ramp_ts(ts, direction):
 def main():
     
     wave = Wave("JONSWAP")
+#    wave = Wave("Pierson-Moscowitz")
+#    wave = Wave("Bretschneider")
+#    wave = Wave("Regular")
     wave.gen_ts_volts()
     
     
