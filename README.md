@@ -1,5 +1,9 @@
 MakeWaves
 =========
+MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development!
+
+License
+-------
 
 MakeWaves Copyright (C) 2013 Peter Bachant
 
@@ -16,7 +20,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development!
 
 Dependencies
 --------
