@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Jul 18 01:16:11 2013
+# Created: Tue Jul 23 13:26:39 2013
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -258,7 +258,7 @@ class Ui_MainWindow(object):
         self.toolbar_main.addAction(self.action_start)
 
         self.retranslateUi(MainWindow)
-        self.tabwidget.setCurrentIndex(0)
+        self.tabwidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
         QtCore.QObject.connect(self.action_view_ts, QtCore.SIGNAL(_fromUtf8("triggered(bool)")), self.dock_time_series.setVisible)
         QtCore.QObject.connect(self.dock_time_series, QtCore.SIGNAL(_fromUtf8("visibilityChanged(bool)")), self.action_view_ts.setChecked)
@@ -279,7 +279,7 @@ class Ui_MainWindow(object):
         self.combobox_randwavetype.setItemText(1, _translate("MainWindow", "JONSWAP", None))
         self.combobox_randwavetype.setItemText(2, _translate("MainWindow", "NH Extreme", None))
         self.combobox_randwavetype.setItemText(3, _translate("MainWindow", "NH Typical", None))
-        self.combobox_randwavetype.setItemText(4, _translate("MainWindow", "Pierson Moscowitz", None))
+        self.combobox_randwavetype.setItemText(4, _translate("MainWindow", "Pierson-Moscowitz", None))
         item = self.table_rwaves.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "0", None))
         item = self.table_rwaves.verticalHeaderItem(1)

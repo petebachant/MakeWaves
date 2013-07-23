@@ -14,6 +14,7 @@ Needs:
   * Correct elev2stroke calculation
 
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
@@ -183,8 +184,8 @@ def ramp_ts(ts, direction):
 
 def main():
     
-    wave = Wave("JONSWAP")
-#    wave = Wave("Pierson-Moscowitz")
+#    wave = Wave("JONSWAP")
+    wave = Wave("Pierson-Moscowitz")
 #    wave = Wave("Bretschneider")
 #    wave = Wave("Regular")
     wave.gen_ts_volts()

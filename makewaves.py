@@ -52,7 +52,7 @@ rw_params = {"Bretschneider" : bret_params,
              "JONSWAP" : jonswap_params,
              "NH Extreme" : nhextreme_params,
              "NH Typical" : nhtypical_params,
-             "Pierson Moscowitz" : pm_params}
+             "Pierson-Moscowitz" : pm_params}
                   
              
 # Some universal constants
@@ -400,7 +400,7 @@ class MainWindow(QtGui.QMainWindow):
             daqmx.SetWriteRegenMode(self.AOtaskHandle, 
                                     daqmx.Val_DoNotAllowRegen)
                                     
-            
+            # Setup a callback function to run once the DAQmx driver finishes
             def DoneCallback_py(taskHandle, status, callbackData_ptr):
                 self.rampeddown = True
                 print "Done"
@@ -409,15 +409,20 @@ class MainWindow(QtGui.QMainWindow):
             DoneCallback = daqmx.DoneEventCallbackPtr(DoneCallback_py)
             daqmx.RegisterDoneEvent(self.AOtaskHandle, 0, DoneCallback, None)                        
             
+            # Output the rampup time series
             daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                  daqmx.Val_GroupByChannel, rampup_ts)
                                            
             daqmx.StartTask(self.AOtaskHandle)
             
+            # Wait a couple seconds to allow the DAQmx buffer to empty
             time.sleep(self.period*0.9)
 
+            # Set iteration variable to keep track of how many chunks of data
+            # have been written
             i = 1
             
+            # Main running loop that writes data to DAQmx buffer
             while self.enable:
                 writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
                 print "Available:", writeSpaceAvail
@@ -438,6 +443,7 @@ class MainWindow(QtGui.QMainWindow):
                     
                 time.sleep(self.period)
             
+            # After disabled, initiate rampdown timeseries
             if self.wavetype != "Regular":
                 if i >= 64:
                     self.rampdown_ts = ramp_ts(tsparts[i % 64, :], "down")
@@ -449,6 +455,7 @@ class MainWindow(QtGui.QMainWindow):
             daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
                                      daqmx.Val_GroupByChannel, self.rampdown_ts)
             
+            # Keep running, part of PyDAQmx callback syntax
             while True:
                 pass
             
@@ -473,7 +480,7 @@ class MainWindow(QtGui.QMainWindow):
                 time.sleep(0.2)
                
     
-
+# Boilerplate code to run a Qt application
 def main():
     
     app = QtGui.QApplication(sys.argv)
@@ -483,7 +490,7 @@ def main():
     
     sys.exit(app.exec_())
     
-
+# Boilerplate code to run the Python application
 if __name__ == '__main__':
     main()
 
