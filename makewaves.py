@@ -325,7 +325,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_start.setIcon(QIcon(":icons/play.png"))
         self.ui.action_start.setEnabled(True)
         self.ui.tabwidget.setEnabled(True)
-        self.wavegen.clear()
         
         
     def on_about(self):
@@ -478,6 +477,8 @@ class MainWindow(QtGui.QMainWindow):
             
             while not self.wavegen.rampeddown:
                 time.sleep(0.2)
+            
+            self.wavegen.clear()
                
     
 # Boilerplate code to run a Qt application
