@@ -362,7 +362,7 @@ class MainWindow(QtGui.QMainWindow):
             self.sr = self.wave.sr
             
             # Get data to write from the wave object
-            self.ts_plot = self.wave.ts
+            self.ts_plot = self.wave.ts_elev
             self.dataw = self.wave.ts_volts
             
             # If random waves, divide up time series into 64 parts

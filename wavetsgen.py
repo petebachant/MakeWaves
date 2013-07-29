@@ -106,7 +106,7 @@ class Wave(object):
             self.sr = self.sbuffsize/self.period
             
             t = np.linspace(0, 2*pi, self.sbuffsize)
-            self.ts = self.height/2*np.sin(t)
+            self.ts_elev = self.height/2*np.sin(t)
             
         else:
             """Generate random wave time series"""
@@ -153,21 +153,21 @@ class Wave(object):
                 self.period = 2*pi*self.windspeed/(0.877*g)
                 
             # Final step: compute time series    
-            self.ts = spec2ts(self.spec, self.sr)
+            self.ts_elev = spec2ts(self.spec, self.sr)
             
             
     def gen_ts_stroke(self):
         """Needs algorithm for random waves"""
         self.gen_ts()
-        self.ts_stroke = elev2stroke(self.ts, self.height, self.period)
+        self.ts_stroke = elev2stroke(self.ts_elev, self.height, self.period)
         
     def gen_ts_volts(self):
         self.gen_ts_stroke()
         self.ts_volts = stroke2volts(self.ts_stroke)
         
     def comp_spec(self):
-        t = np.arange(len(self.ts))/self.sr
-        f, spec = timeseries.psd(t, self.ts, window=None)
+        t = np.arange(len(self.ts_elev))/self.sr
+        f, spec = timeseries.psd(t, self.ts_elev, window=None)
         return f, spec
         
 
@@ -188,13 +188,13 @@ def main():
     
 #    wave = Wave("JONSWAP")
 #    wave = Wave("Pierson-Moscowitz")
-#    wave = Wave("Bretschneider")
-    wave = Wave("Regular")
-    wave.height = 0.3
+    wave = Wave("Bretschneider")
+#    wave = Wave("Regular")
+#    wave.height = 0.3
     wave.gen_ts_volts()
     
     
-    ts = wave.ts_volts
+    ts = wave.ts_elev
     t = np.arange(len(ts))/wave.sr
     
     plt.close("all")
