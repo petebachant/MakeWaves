@@ -56,25 +56,17 @@ rw_params = {"Bretschneider" : bret_params,
                   
              
 # Some universal constants
-physchan = "Dev1/ao0"
-samprate = 200.0
-stroke_cal = 7.8564 # Volts per meter stroke or wave height?
 paddle_height = 1.0
 water_depth = 2.44
 minperiod = 0.5
 maxperiod = 5.0
-max_halfstroke = 0.16
-max_H_L = 0.1
-max_H_D = 0.65
 
-periods = np.round(np.load("periods.npy"), decimals=3)
+periods = np.round(np.load("periods.npy"), decimals=4)
 maxH = np.load("maxH.npy")
 minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
 maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
 
 # Constants specific to rand waves
-buffsize_rand = 65536
-sub_buffsize = 128
 minperiod_rand = 0.90
 maxperiod_rand = 3.5
 cutoff_freq = 2.0
@@ -105,7 +97,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tabwidget.setCurrentIndex(0)
         
         # Initialize slider values
-        self.ui.slider_height.setRange(0.0, 0.4, 0.001, 10)
+        hmax = maxH[np.where(periods==np.round(1, decimals=2))[0]]
+        self.ui.slider_height.setRange(0.0, hmax, 0.001, 10)
+        self.ui.spinbox_wave_height.setMaximum(hmax)
         self.ui.slider_height.setValue(self.ui.spinbox_wave_height.value())
         self.ui.slider_height.setScaleMaxMajor(12)
         
@@ -198,9 +192,9 @@ class MainWindow(QtGui.QMainWindow):
     def on_wp_changed(self):
         wp = self.ui.spinbox_wave_period.value()
         if self.parameters == "HT":
-            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0]]
-            self.ui.spinbox_wave_height.setMaximum(np.mean(hmax))
-            self.ui.slider_height.setRange(0, np.mean(hmax), 0.001, 10)
+            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0][0]]
+            self.ui.spinbox_wave_height.setMaximum(hmax)
+            self.ui.slider_height.setRange(0, hmax, 0.001, 10)
             wl = 2*np.pi/wml.dispsolver(2*np.pi/wp, water_depth, decimals=1)
             self.ui.spinbox_wavelength.setValue(wl)
             self.ui.slider_horiz.setValue(wp)
@@ -211,9 +205,9 @@ class MainWindow(QtGui.QMainWindow):
             wl = self.ui.spinbox_wavelength.value()
             wp = 2*np.pi/wml.revdispsolver(2*np.pi/wl, water_depth, decimals=1)
             self.ui.spinbox_wave_period.setValue(wp)
-            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0]]
-            self.ui.spinbox_wave_height.setMaximum(np.mean(hmax))
-            self.ui.slider_height.setRange(0, np.mean(hmax), 0.001, 10)
+            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0][0]]
+            self.ui.spinbox_wave_height.setMaximum(hmax)
+            self.ui.slider_height.setRange(0, hmax, 0.001, 10)
             self.ui.slider_horiz.setValue(wl)            
         
         
@@ -391,7 +385,7 @@ class MainWindow(QtGui.QMainWindow):
             self.AOtaskHandle = daqmx.TaskHandle()
             daqmx.CreateTask("", self.AOtaskHandle)
             daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "", 
-                                      -1.0, 1.0, daqmx.Val_Volts, None)
+                                      -5.0, 5.0, daqmx.Val_Volts, None)
             daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr, 
                                    daqmx.Val_Rising, daqmx.Val_ContSamps, 
                                    self.buffsize)

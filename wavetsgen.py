@@ -27,6 +27,8 @@ stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
 
+
+
 def spec2ts(spec, sr):
     """Create time series with random phases from power spectrum."""
     phase = np.random.normal(0, pi, len(spec))
@@ -37,14 +39,14 @@ def spec2ts(spec, sr):
     return ts
 
 
-def elev2stroke(elev, waveheight, waveperiod):
+def elev2stroke(ts_elev, waveheight, waveperiod):
     """Computes piston stroke from elevation time series.
     Still needs to be checked for random waves parameters."""
     k = dispsolver(2*pi/waveperiod, water_depth, 2)
     kh = k*water_depth
-    factor = waveheight*paddle_height/2.0/water_depth
+    factor = paddle_height/water_depth
     stroke = 4*(sinh(kh)/kh)*(kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh)
-    return elev*factor/stroke
+    return ts_elev*factor/stroke
     
 
 def stroke2volts(stroke):
@@ -185,25 +187,18 @@ def ramp_ts(ts, direction):
 def main():
     
 #    wave = Wave("JONSWAP")
-    wave = Wave("Pierson-Moscowitz")
+#    wave = Wave("Pierson-Moscowitz")
 #    wave = Wave("Bretschneider")
-#    wave = Wave("Regular")
+    wave = Wave("Regular")
+    wave.height = 0.3
     wave.gen_ts_volts()
     
     
     ts = wave.ts_volts
     t = np.arange(len(ts))/wave.sr
     
-    
-    plt.close('all')
-    plt.figure()
+    plt.close("all")
     plt.plot(t, ts)
-    
-    # Recompute spectra
-    f, spec = timeseries.psd(t, ts, window=None)
-    plt.figure()
-    plt.plot(f, spec)
-    plt.xlim(0,5)
     
     
 if __name__ == "__main__":

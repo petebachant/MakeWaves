@@ -88,6 +88,8 @@ def findlimits(plotchoice=False):
     mh = np.zeros(len(periods))
     
     for n in range(len(periods)):
+        progress = n/len(periods)*100
+        print "Progress:", str(progress)+"%"
         mh[n] = calc_safe_height(50, periods[n])
     
     if plotchoice:
@@ -100,3 +102,10 @@ def findlimits(plotchoice=False):
     np.save("maxH", mh)
         
     return periods, mh
+
+
+def main():
+    findlimits(False)
+    
+if __name__ == "__main__":
+    main()
