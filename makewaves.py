@@ -128,7 +128,15 @@ class MainWindow(QtGui.QMainWindow):
         # Add dock widgets to right dock widget area and tabify them
         self.tabifyDockWidget(self.ui.dock_time_series,
                               self.ui.dock_spectrum)
-               
+                              
+        self.on_rw_changed()
+        
+    def setup_spinboxes(self, nboxes):  
+        """Add double spin boxes to the random waves table widget"""
+        self.spinboxes_rw = []
+        for n in range(nboxes):
+            self.spinboxes_rw.append(QDoubleSpinBox())
+            self.ui.table_rwaves.setCellWidget(n, 1, self.spinboxes_rw[n])
     
     def initialize_plots(self):
         # Create time series plot
@@ -269,11 +277,16 @@ class MainWindow(QtGui.QMainWindow):
         self.rw_type = str(self.ui.combobox_randwavetype.currentText())
         self.rw_params = rw_params[self.rw_type]
         self.ui.table_rwaves.setRowCount(len(self.rw_params))
+        self.setup_spinboxes(len(self.rw_params))
         row = 0
         
         for parameter, value in self.rw_params:
             self.ui.table_rwaves.setItem(row, 0, QTableWidgetItem(parameter))
-            self.ui.table_rwaves.setItem(row, 1, QTableWidgetItem(str(value)))
+            self.spinboxes_rw[row].setValue(value)
+            self.spinboxes_rw[row].setSingleStep(0.01)
+            self.spinboxes_rw[row].setAccelerated(True)
+            if "NH" in self.rw_type:
+                self.spinboxes_rw[row].setDisabled(True)
             row += 1
 
         
@@ -304,6 +317,12 @@ class MainWindow(QtGui.QMainWindow):
                 rspec = self.ui.combobox_randwavetype.currentText()
                 self.slabel.setText("Generating " + rspec + " waves... ")
                 self.wavegen = WaveGen(rspec)
+                
+                if rspec == BRETSCHNEIDER or rspec == JONSWAP or rspec == NH_EXTREME:
+                    self.wavegen.wave.sig_height = self.spinboxes_rw[0].value()
+                    self.wavegen.wave.sig_period = self.spinboxes_rw[1].value()
+                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[2].value()
+                
                 self.wavegen.start()
                 
             self.timer.start(500)              
@@ -342,10 +361,7 @@ class MainWindow(QtGui.QMainWindow):
     def closeEvent(self, event):
         if self.wavegen != None:
             if self.wavegen.isRunning() and not self.wavegen.cleared:
-                self.wavestop = self.WaveStop(self.wavegen)
-                self.wavestop.finished.connect(self.on_wave_finished)
-                self.wavestop.start()
-                
+                self.wavegen.stop()
                 
 class WaveGen(QtCore.QThread):
     def __init__(self, wavetype):

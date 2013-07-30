@@ -410,7 +410,7 @@
         <string>0.1</string>
        </property>
        <property name="flags">
-        <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+        <set>ItemIsSelectable|ItemIsEnabled</set>
        </property>
       </item>
       <item row="1" column="0">
@@ -423,7 +423,7 @@
         <string>1</string>
        </property>
        <property name="flags">
-        <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
+        <set>ItemIsSelectable|ItemIsEnabled</set>
        </property>
       </item>
       <item row="2" column="0">
@@ -434,6 +434,9 @@
       <item row="2" column="1">
        <property name="text">
         <string>1</string>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
        </property>
       </item>
      </widget>

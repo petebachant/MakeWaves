@@ -13,7 +13,7 @@ import makewaves
 import time
 
 # Create a wave generation object
-wavegen = makewaves.WaveGen(makewaves.JONSWAP)
+wavegen = makewaves.WaveGen(makewaves.PIERSON_MOSCOWITZ)
 wavegen.wave.sig_height = 0.1
 wavegen.start()
 

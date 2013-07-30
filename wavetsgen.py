@@ -104,7 +104,6 @@ class Wave(object):
         if self.wavetype == "Regular":
             """Generate a regular wave time series"""
             self.sr = self.sbuffsize/self.period
-            
             t = np.linspace(0, 2*pi, self.sbuffsize)
             self.ts_elev = self.height/2*np.sin(t)
             
@@ -187,14 +186,14 @@ def ramp_ts(ts, direction):
 def main():
     
 #    wave = Wave("JONSWAP")
-#    wave = Wave("Pierson-Moscowitz")
-    wave = Wave("Bretschneider")
+    wave = Wave("Pierson-Moscowitz")
+#    wave = Wave("Bretschneider")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
     wave.gen_ts_volts()
     
     
-    ts = wave.ts_elev
+    ts = wave.ts_volts
     t = np.arange(len(ts))/wave.sr
     
     plt.close("all")

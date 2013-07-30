@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Jul 23 13:26:39 2013
+# Created: Mon Jul 29 21:30:39 2013
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -140,16 +140,17 @@ class Ui_MainWindow(object):
         item = QtGui.QTableWidgetItem()
         self.table_rwaves.setItem(0, 0, item)
         item = QtGui.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
         self.table_rwaves.setItem(0, 1, item)
         item = QtGui.QTableWidgetItem()
         self.table_rwaves.setItem(1, 0, item)
         item = QtGui.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
         self.table_rwaves.setItem(1, 1, item)
         item = QtGui.QTableWidgetItem()
         self.table_rwaves.setItem(2, 0, item)
         item = QtGui.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled)
         self.table_rwaves.setItem(2, 1, item)
         self.table_rwaves.horizontalHeader().setVisible(False)
         self.table_rwaves.horizontalHeader().setDefaultSectionSize(175)
