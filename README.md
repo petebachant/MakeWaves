@@ -2,6 +2,25 @@ MakeWaves
 =========
 MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development!
 
+
+To-do
+-----
+  * Listen to ACS controller for E-stop presses, or better yet hard wire E-stop into digital inputs of NI controller?
+
+
+
+Dependencies
+--------
+  * Python 2.xx
+  * numpy
+  * matplotlib (for testing output of wavetsgen.py)
+  * daqmx.py (see misc_python)
+  * PyDAQmx
+  * timeseries.py (see misc_python)
+  * PyQt4
+  * NI DAQmx driver
+
+
 License
 -------
 
@@ -19,15 +38,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-Dependencies
---------
-  * Python 2.xx
-  * numpy
-  * matplotlib (for testing output of wavetsgen.py)
-  * daqmx.py (see misc_python)
-  * PyDAQmx
-  * timeseries.py (see misc_python)
-  * PyQt4
-  * NI DAQmx driver
