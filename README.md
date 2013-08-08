@@ -1,5 +1,7 @@
 MakeWaves
 =========
+MakeWaves Copyright (c) 2013 Peter Bachant. See license below for details. 
+
 MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development!
 
 
@@ -11,7 +13,7 @@ To-do
 
 Dependencies
 --------
-  * Python 2.xx
+  * Python 2.7x
   * numpy
   * matplotlib (for testing output of wavetsgen.py)
   * daqmx.py (see misc_python)
@@ -23,8 +25,6 @@ Dependencies
 
 License
 -------
-
-MakeWaves Copyright (C) 2013 Peter Bachant
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
