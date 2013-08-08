@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>makewaves_icon.png</file>
     <file>folder_yellow.png</file>
     <file>start.png</file>
     <file>agt_stop.png</file>

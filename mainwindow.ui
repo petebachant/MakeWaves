@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>MakeWaves</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icons/resources.qrc">
+    <normaloff>:/icons/makewaves_icon.png</normaloff>:/icons/makewaves_icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabwidget">
     <property name="enabled">
