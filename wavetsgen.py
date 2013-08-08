@@ -6,7 +6,7 @@ Created on Tue Jun 18 18:48:22 2013
 
 This module generates various wave spectra and time series.
 
-Pierson-Moscowitz formula taken from:
+Pierson-Moskowitz formula taken from:
 http://oceanworld.tamu.edu/resources/ocng_textbook/chapter16/chapter16_04.htm
 
 Needs:
@@ -95,7 +95,7 @@ class Wave(object):
             self.gamma2 = 0.5
             self.P = 4.34
             
-        elif self.wavetype == "Pierson-Moscowitz":
+        elif self.wavetype == "Pierson-Moskowitz":
             self.windspeed = 2.0
             self.scale_ratio = 1.0
 
@@ -141,7 +141,7 @@ class Wave(object):
             elif self.wavetype == "NH Typical":
                 pass
             
-            elif self.wavetype == "Pierson-Moscowitz":
+            elif self.wavetype == "Pierson-Moskowitz":
                 """Needs implementation of scale ratio"""
                 g = 9.81
                 omega_0 = g/self.windspeed
@@ -186,7 +186,7 @@ def ramp_ts(ts, direction):
 def main():
     
 #    wave = Wave("JONSWAP")
-    wave = Wave("Pierson-Moscowitz")
+    wave = Wave("Pierson-Moskowitz")
 #    wave = Wave("Bretschneider")
 #    wave = Wave("Regular")
 #    wave.height = 0.3

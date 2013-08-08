@@ -22,7 +22,7 @@ BRETSCHNEIDER = "Bretschneider"
 JONSWAP = "JONSWAP"
 NH_EXTREME = "NH Extreme"
 NH_TYPICAL = "NH Typical"
-PIERSON_MOSCOWITZ = "Pierson-Moscowitz"
+PIERSON_MOSKOWITZ = "Pierson-Moskowitz"
 
 
 # Spectral parameters for random waves
@@ -60,7 +60,7 @@ rw_params = {"Bretschneider" : bret_params,
              "JONSWAP" : jonswap_params,
              "NH Extreme" : nhextreme_params,
              "NH Typical" : nhtypical_params,
-             "Pierson-Moscowitz" : pm_params}
+             "Pierson-Moskowitz" : pm_params}
                   
              
 # Some universal constants

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>618</width>
-    <height>331</height>
+    <height>343</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -209,17 +209,14 @@
       <property name="scalePosition">
        <enum>QwtSlider::BottomScale</enum>
       </property>
-      <property name="bgStyle">
-       <enum>QwtSlider::BgSlot</enum>
-      </property>
-      <property name="thumbLength">
-       <number>16</number>
-      </property>
-      <property name="thumbWidth">
-       <number>12</number>
-      </property>
       <property name="borderWidth">
        <number>2</number>
+      </property>
+      <property name="thumbLength" stdset="0">
+       <number>16</number>
+      </property>
+      <property name="thumbWidth" stdset="0">
+       <number>12</number>
       </property>
      </widget>
      <widget class="QwtSlider" name="slider_height">
@@ -237,17 +234,14 @@
       <property name="scalePosition">
        <enum>QwtSlider::RightScale</enum>
       </property>
-      <property name="bgStyle">
-       <enum>QwtSlider::BgSlot</enum>
-      </property>
-      <property name="thumbLength">
-       <number>16</number>
-      </property>
-      <property name="thumbWidth">
-       <number>12</number>
-      </property>
       <property name="borderWidth">
        <number>2</number>
+      </property>
+      <property name="thumbLength" stdset="0">
+       <number>16</number>
+      </property>
+      <property name="thumbWidth" stdset="0">
+       <number>12</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -302,7 +296,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Pierson-Moscowitz</string>
+        <string>Pierson-Moskowitz</string>
        </property>
       </item>
      </widget>
@@ -508,7 +502,7 @@
      <x>0</x>
      <y>0</y>
      <width>618</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
