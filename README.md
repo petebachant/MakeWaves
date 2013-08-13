@@ -2,13 +2,16 @@ MakeWaves
 =========
 MakeWaves Copyright (c) 2013 Peter Bachant. See license below for details. 
 
-MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development!
+MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. It's still in development.
 
 
 To-do
 -----
+  * Figure out why random wave output amplitudes seem to be half what they are compared to Random Seas.
+  * Pierson-Moskowitz waves only output ramped section of time series even though buffer size is the same. 
+  * Calculate limits for random wave parameters based on Random Seas LabVIEW code.
   * Listen to ACS controller for E-stop presses, or better yet hard wire E-stop into digital inputs of NI controller?
-
+  * Properly organize folders of code, resources, etc. 
 
 
 Dependencies
