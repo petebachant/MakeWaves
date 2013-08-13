@@ -1,0 +1,53 @@
+WM Bretschneider.vi
+  Front Panel
+    - Significant Wave Height uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Peak Wave Period uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Scale Ratio uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Number of Frequencies uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - End Freq uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM Dispersion Solver.vi
+  Front Panel
+    - Wave Period uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Water Depth uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Gravity uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM JONSWAP.vi
+  Front Panel
+    - Start Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Significant Wave Height uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Peak Wave Period uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Scale Ratio uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Number of Frequencies uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - End Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM New Hampshire Typical.vi
+  Front Panel
+    - Significant Wave Height uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Peak Wave Period 1 uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Number of Frequencies uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM NH Extreme.vi
+  Front Panel
+    - Start Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Significant Wave Height uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Peak Wave Period uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Scale Ratio uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Number of Frequencies uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - End Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM Output Settings.vi
+  Front Panel
+    - Output Settings.Sampling Rate uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Output Settings.Sub Buffer Length uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Output Settings Results.Sampling Rate uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Output Settings Results.Sub Buffer Length uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM Paddle Calibration.vi
+  Front Panel
+    - Output Voltage.Output Voltage uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM Period-Depth to Wave Length.vi
+  Front Panel
+    - Period uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Water Depth uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+WM Pierson Moskowitz.vi
+  Front Panel
+    - Start Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Scale Ratio uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Number of Frequencies uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - Wind Speed uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
+    - End Freq (Model Scale) uses data range coercion, which now only applies to data entry; values will not be coerced when passed to subVIs.  To coerce passed values,  use the In Range and Coerce function.
