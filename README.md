@@ -12,6 +12,7 @@ To-do
   * Calculate limits for random wave parameters based on Random Seas LabVIEW code.
   * Listen to ACS controller for E-stop presses, or better yet hard wire E-stop into digital inputs of NI controller?
   * Properly organize folders of code, resources, etc. 
+  * Put searching for new wave height limits in its own thread so GUI doesn't feel laggy
 
 
 Dependencies
