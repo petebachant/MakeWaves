@@ -26,6 +26,7 @@ from wavemakerlimits import dispsolver
 stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
+g = 9.81
 
 
 
@@ -143,7 +144,6 @@ class Wave(object):
             
             elif self.wavetype == "Pierson-Moskowitz":
                 """Needs implementation of scale ratio"""
-                g = 9.81
                 omega_0 = g/self.windspeed
                 a = 8.1e-3
                 b = 0.74
@@ -182,15 +182,15 @@ def ramp_ts(ts, direction):
         
     return ts*rampfull
 
-
-def main():
     
+if __name__ == "__main__":
 #    wave = Wave("JONSWAP")
-    wave = Wave("Pierson-Moskowitz")
-#    wave = Wave("Bretschneider")
+#    wave = Wave("Pierson-Moskowitz")
+    wave = Wave("Bretschneider")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
     wave.gen_ts_volts()
+    print wave.height, wave.period, wave.sbuffsize, wave.sr, wave.buffsize
     
     
     ts = wave.ts_volts
@@ -198,9 +198,5 @@ def main():
     
     plt.close("all")
     plt.plot(t, ts)
-    
-    
-if __name__ == "__main__":
-    main()
     
     

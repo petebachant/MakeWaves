@@ -6,12 +6,12 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
 To-do
 -----
   * Figure out why random wave output amplitudes seem to be half what they are compared to Random Seas.
-  * Pierson-Moskowitz waves only output ramped section of time series even though buffer size is the same. Fix this. 
   * Calculate limits for random wave parameters based on Random Seas LabVIEW code.
   * Listen to ACS controller for E-stop presses, or better yet hard wire E-stop into digital inputs of NI controller?
   * Properly organize folders of code, resources, etc. 
   * Put searching for new wave height limits in its own thread so GUI doesn't feel laggy
-
+  * Make regular waves in a similar way to random, i.e. use sub-buffers so ramping down can happen more quickly. 
+  * Implement scale ratio in Pierson-Moskowitz waves.
 
 Dependencies
 --------

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>618</width>
-    <height>343</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -43,7 +43,7 @@
      <enum>QTabWidget::North</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -198,7 +198,7 @@
         <x>10</x>
         <y>150</y>
         <width>171</width>
-        <height>41</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="readOnly">
@@ -213,14 +213,17 @@
       <property name="scalePosition">
        <enum>QwtSlider::BottomScale</enum>
       </property>
-      <property name="borderWidth">
-       <number>2</number>
+      <property name="bgStyle">
+       <enum>QwtSlider::BgSlot</enum>
       </property>
-      <property name="thumbLength" stdset="0">
+      <property name="thumbLength">
        <number>16</number>
       </property>
-      <property name="thumbWidth" stdset="0">
+      <property name="thumbWidth">
        <number>12</number>
+      </property>
+      <property name="borderWidth">
+       <number>2</number>
       </property>
      </widget>
      <widget class="QwtSlider" name="slider_height">
@@ -238,14 +241,17 @@
       <property name="scalePosition">
        <enum>QwtSlider::RightScale</enum>
       </property>
-      <property name="borderWidth">
-       <number>2</number>
+      <property name="bgStyle">
+       <enum>QwtSlider::BgSlot</enum>
       </property>
-      <property name="thumbLength" stdset="0">
+      <property name="thumbLength">
        <number>16</number>
       </property>
-      <property name="thumbWidth" stdset="0">
+      <property name="thumbWidth">
        <number>12</number>
+      </property>
+      <property name="borderWidth">
+       <number>2</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -497,6 +503,19 @@
        <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>210</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Frequency (Hz)</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -506,7 +525,7 @@
      <x>0</x>
      <y>0</y>
      <width>618</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -576,6 +595,9 @@
      <height>256</height>
     </size>
    </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
    <property name="windowTitle">
     <string>Output Time Series</string>
    </property>
@@ -594,6 +616,32 @@
      </property>
      <property name="styleSheet">
       <string notr="true">font: 8pt &quot;MS Shell Dlg 2&quot;;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>213</y>
+       <width>46</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Time (s)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(m)</string>
      </property>
     </widget>
    </widget>

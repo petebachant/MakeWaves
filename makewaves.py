@@ -3,6 +3,7 @@
 Created on Sun Jun 02 08:53:07 2013
 
 @author: Pete
+
 """
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -12,7 +13,7 @@ import PyQt4.Qwt5 as Qwt
 import sys
 import wavemakerlimits as wml
 import numpy as np
-import daqmx
+from daqmx import daqmx
 import time
 from wavetsgen import Wave, ramp_ts
 
@@ -322,6 +323,9 @@ class MainWindow(QtGui.QMainWindow):
                     self.wavegen.wave.sig_height = self.spinboxes_rw[0].value()
                     self.wavegen.wave.sig_period = self.spinboxes_rw[1].value()
                     self.wavegen.wave.scale_ratio = self.spinboxes_rw[2].value()
+                elif rspec == "Pierson-Moskowitz":
+                    self.wavegen.wave.windspeed = self.spinboxes_rw[0].value()
+                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[1].value()
                 
                 self.wavegen.start()
                 
@@ -350,19 +354,36 @@ class MainWindow(QtGui.QMainWindow):
     def on_about(self):
         about_text = QString("<b>MakeWaves 0.0.1</b><br>")
         about_text.append("A wave making app for the UNH tow/wave tank<br><br>")
-        about_text.append("Built 6.2013 by Pete Bachant<br>")
+        about_text.append("Built 2013.09 by Pete Bachant<br>")
         about_text.append("petebachant@gmail.com")
         QMessageBox.about(self, "About MakeWaves", about_text)
         
     def on_wiki(self):
-        url = QUrl("http://unhtowtank.wikispaces.com/Making+Waves")
+        url = QUrl("http://pxl3.me/unhoelab/wiki/doku.php?id=tow_tank:operation:wavemaker")
         QDesktopServices.openUrl(url)
         
     def closeEvent(self, event):
         if self.wavegen != None:
             if self.wavegen.isRunning() and not self.wavegen.cleared:
                 self.wavegen.stop()
-                
+                dialog = QtGui.QDialog()
+                pbar = QtGui.QProgressBar()
+                pbar.setFixedWidth(300)
+                layout = QtGui.QGridLayout()
+                layout.addWidget(pbar, 0, 0)
+                dialog.setLayout(layout)
+                dialog.setWindowTitle("Ramping down...")
+                dialog.setWindowIcon(QtGui.QIcon("icons/makewaves_icon.svg"))
+                dialog.show()
+                progress = 0
+                while not self.wavegen.cleared:
+                    # The progress here is fake, just calibrated to be close
+                    time.sleep(0.1)
+                    progress += int(60*0.1/self.wavegen.period)
+                    pbar.setValue(progress)
+                dialog.close()
+     
+           
 class WaveGen(QtCore.QThread):
     def __init__(self, wavetype):
         QtCore.QThread.__init__(self)
@@ -408,11 +429,10 @@ class WaveGen(QtCore.QThread):
         self.AOtaskHandle = daqmx.TaskHandle()
         daqmx.CreateTask("", self.AOtaskHandle)
         daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "", 
-                                  -5.0, 5.0, daqmx.Val_Volts, None)
+                                  -6.0, 6.0, daqmx.Val_Volts, None)
         daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr, 
                                daqmx.Val_Rising, daqmx.Val_ContSamps, 
                                self.buffsize)
-                               
         daqmx.SetWriteRegenMode(self.AOtaskHandle, 
                                 daqmx.Val_DoNotAllowRegen)
                                 
@@ -430,8 +450,11 @@ class WaveGen(QtCore.QThread):
                                        
         daqmx.StartTask(self.AOtaskHandle)
         
-        # Wait a couple seconds to allow the DAQmx buffer to empty
-        time.sleep(self.period*0.9)
+        # Wait a second to allow the DAQmx buffer to empty
+        if self.wavetype == "Regular":
+            time.sleep(self.period*0.9) # was self.period*0.4
+        else:
+            time.sleep(0.99)
 
         # Set iteration variable to keep track of how many chunks of data
         # have been written
@@ -440,23 +463,16 @@ class WaveGen(QtCore.QThread):
         # Main running loop that writes data to DAQmx buffer
         while self.enable:
             writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-#            print "Available:", writeSpaceAvail
-            
             if writeSpaceAvail >= self.buffsize:
-                
                 if self.wavetype != "Regular":
                     if i >= 64:
                         self.dataw = tsparts[i % 64, :]
                     else: 
                         self.dataw = tsparts[i, :]
-                
-                w = daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0, 
-                                         daqmx.Val_GroupByChannel, self.dataw)
-#                print "Wrote", w
-#                print "Iteration:", i
+                daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 
+                        10.0, daqmx.Val_GroupByChannel, self.dataw)
                 i += 1
-                
-            time.sleep(self.period)
+            time.sleep(0.99) # Was self.period
         
         # After disabled, initiate rampdown timeseries
         if self.wavetype != "Regular":
@@ -502,6 +518,7 @@ def main():
     app = QtGui.QApplication(sys.argv)
 
     w = MainWindow()
+    w.setWindowIcon(QtGui.QIcon("icons/makewaves_icon.svg"))
     w.show()
     
     sys.exit(app.exec_())
