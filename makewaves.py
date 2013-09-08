@@ -281,11 +281,22 @@ class MainWindow(QtGui.QMainWindow):
         self.setup_spinboxes(len(self.rw_params))
         row = 0
         
+        # Disable start button for NH Typical and NH Extreme for now
+        if "NH" in self.rw_type:
+            self.ui.action_start.setDisabled(True)
+        else:
+            self.ui.action_start.setEnabled(True)    
+        
         for parameter, value in self.rw_params:
             self.ui.table_rwaves.setItem(row, 0, QTableWidgetItem(parameter))
             self.spinboxes_rw[row].setValue(value)
             self.spinboxes_rw[row].setSingleStep(0.01)
             self.spinboxes_rw[row].setAccelerated(True)
+            if "Height" in parameter:
+                self.spinboxes_rw[row].setMaximum(0.4)
+            if "Period" in parameter:
+                self.spinboxes_rw[row].setMaximum(4)
+                self.spinboxes_rw[row].setMinimum(1)
             if "NH" in self.rw_type:
                 self.spinboxes_rw[row].setDisabled(True)
             row += 1
@@ -353,7 +364,7 @@ class MainWindow(QtGui.QMainWindow):
         
     def on_about(self):
         about_text = QString("<b>MakeWaves 0.0.1</b><br>")
-        about_text.append("A wave making app for the UNH tow/wave tank<br><br>")
+        about_text.append("A wavemaking app for the UNH tow/wave tank<br><br>")
         about_text.append("Built 2013.09 by Pete Bachant<br>")
         about_text.append("petebachant@gmail.com")
         QMessageBox.about(self, "About MakeWaves", about_text)

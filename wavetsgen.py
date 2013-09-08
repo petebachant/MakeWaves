@@ -137,10 +137,30 @@ class Wave(object):
                 self.height = self.sig_height #Don't know about this...
 
             elif self.wavetype == "NH Extreme":
-                pass
+                """Needs to be checked. Doesn't work right."""
+                sigma = self.sigma_B
+                alpha = 0.0624/(0.230 + 0.0336*self.gamma - \
+                0.185*(1.9 + self.gamma)**(-1))
+                A = np.exp((-((self.f*self.sig_period - 1.0)**2))/(2*sigma**2))
+                B = -1.25*(self.sig_period*self.f)**(-4)
+                self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
+                self.f**(-self.P)*np.exp(B)*self.gamma**A
+                self.spec = self.spec/self.scale_ratio
+                self.period = self.sig_period/self.scale_ratio
+                self.height = self.sig_height/self.scale_ratio
+                #Don't know about this...
                 
             elif self.wavetype == "NH Typical":
-                pass
+                """Needs to be totally rewritten"""
+                sigma = self.sigma_A
+                alpha = 0.0624/(0.230 + 0.0336*self.gamma - \
+                0.185*(1.9 + self.gamma)**(-1))
+                A = np.exp((-((self.f*self.sig_period - 1.0)**2))/(2*sigma**2))
+                B = -1.25*(self.sig_period*self.f)**(-4)
+                self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
+                self.f**(-self.P)*np.exp(B)*self.gamma**A
+                self.period = self.sig_period
+                self.height = self.sig_height #Don't know about this...
             
             elif self.wavetype == "Pierson-Moskowitz":
                 """Needs implementation of scale ratio"""
@@ -186,14 +206,15 @@ def ramp_ts(ts, direction):
 if __name__ == "__main__":
 #    wave = Wave("JONSWAP")
 #    wave = Wave("Pierson-Moskowitz")
-    wave = Wave("Bretschneider")
+#    wave = Wave("NH Typical")
+    wave = Wave("NH Extreme")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
     wave.gen_ts_volts()
     print wave.height, wave.period, wave.sbuffsize, wave.sr, wave.buffsize
     
     
-    ts = wave.ts_volts
+    ts = wave.ts_elev
     t = np.arange(len(ts))/wave.sr
     
     plt.close("all")
