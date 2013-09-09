@@ -17,14 +17,6 @@ from daqmx import daqmx
 import time
 from wavetsgen import Wave, ramp_ts
 
-# Constants
-REGULAR = "Regular"
-BRETSCHNEIDER = "Bretschneider"
-JONSWAP = "JONSWAP"
-NH_EXTREME = "NH Extreme"
-NH_TYPICAL = "NH Typical"
-PIERSON_MOSKOWITZ = "Pierson-Moskowitz"
-
 
 # Spectral parameters for random waves
 bret_params = [("Significant Wave Height", 0.1),
@@ -330,7 +322,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.slabel.setText("Generating " + rspec + " waves... ")
                 self.wavegen = WaveGen(rspec)
                 
-                if rspec == BRETSCHNEIDER or rspec == JONSWAP or rspec == NH_EXTREME:
+                if rspec == "Bretschneider" or rspec == "JONSWAP" or rspec == "NH Extreme":
                     self.wavegen.wave.sig_height = self.spinboxes_rw[0].value()
                     self.wavegen.wave.sig_period = self.spinboxes_rw[1].value()
                     self.wavegen.wave.scale_ratio = self.spinboxes_rw[2].value()
