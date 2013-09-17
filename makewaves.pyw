@@ -431,7 +431,7 @@ class WaveGen(QtCore.QThread):
         
         self.AOtaskHandle = daqmx.TaskHandle()
         daqmx.CreateTask("", self.AOtaskHandle)
-        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "", 
+        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao1", "", 
                                   -6.0, 6.0, daqmx.Val_Volts, None)
         daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr, 
                                daqmx.Val_Rising, daqmx.Val_ContSamps, 
