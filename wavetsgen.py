@@ -31,7 +31,7 @@ g = 9.81
 
 
 def spec2ts(spec, sr):
-    """Create time series with random phases from power spectrum."""
+    """Create time series with random (normal) phases from power spectrum."""
     phase = np.random.normal(0, pi, len(spec))
     ts = spec
     ts = np.sqrt(ts*len(ts)*sr)
@@ -125,8 +125,12 @@ class Wave(object):
                 self.period = self.sig_period
                 
             elif self.wavetype=="JONSWAP":
-                """Still needs logic to choose sigma A or sigma B"""
-                sigma = self.sigma_A
+                """Compute a JONSWAP spectrum"""
+                i_left = np.where(self.f <= 1.0/self.sig_period)[0]
+                i_right = np.where(self.f > 1.0/self.sig_period)[0]
+                sigma = np.zeros(len(self.f))
+                sigma[i_left] = self.sigma_A
+                sigma[i_right] = self.sigma_B
                 alpha = 0.0624/(0.230 + 0.0336*self.gamma - \
                 0.185*(1.9 + self.gamma)**(-1))
                 A = np.exp((-((self.f*self.sig_period - 1.0)**2))/(2*sigma**2))
@@ -163,11 +167,12 @@ class Wave(object):
                 self.height = self.sig_height #Don't know about this...
             
             elif self.wavetype == "Pierson-Moskowitz":
-                """Needs implementation of scale ratio"""
-                omega_0 = g/self.windspeed
-                a = 8.1e-3
-                b = 0.74
-                self.spec = (a*g**2/omega**5)*np.exp(-b*(omega_0/omega)**4)
+                """Needs implementation of scale ratio, or not."""
+                U = self.windspeed
+                alpha = 8.1e-3
+                f = self.f
+                B = 0.74*(g/(2*pi*U))**4
+                self.spec = alpha*g**2/((2*pi)**4*f**5)*np.exp(-B/f**4)
                 self.height = 0.21*self.windspeed**2/g
                 self.period = 2*pi*self.windspeed/(0.877*g)
                 
@@ -204,20 +209,25 @@ def ramp_ts(ts, direction):
 
     
 if __name__ == "__main__":
-#    wave = Wave("JONSWAP")
+    wave = Wave("JONSWAP")
+#    wave = Wave("Bretschneider")
 #    wave = Wave("Pierson-Moskowitz")
 #    wave = Wave("NH Typical")
-    wave = Wave("NH Extreme")
+#    wave = Wave("NH Extreme")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
     wave.gen_ts_volts()
-    print wave.height, wave.period, wave.sbuffsize, wave.sr, wave.buffsize
-    
     
     ts = wave.ts_elev
     t = np.arange(len(ts))/wave.sr
     
-    plt.close("all")
-    plt.plot(t, ts)
+    f, s = wave.comp_spec()
+    f2, s2 = wave.f, wave.spec
     
+    plt.close("all")
+    plt.plot(f, s)
+    plt.hold(True)
+    plt.plot(f2, s2)
+    plt.xlim((0,5))
+    plt.show()
     
