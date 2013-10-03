@@ -2,7 +2,7 @@
 """
 Created on Tue Jun 18 18:48:22 2013
 
-@author: Pete
+@author: Pete Bachant
 
 This module generates various wave spectra and time series.
 
@@ -27,16 +27,13 @@ stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
 g = 9.81
-
+###
 
 
 def spec2ts(spec, sr):
     """Create time series with random (normal) phases from power spectrum."""
     phase = np.random.normal(0, pi, len(spec))
-    ts = spec
-    ts = np.sqrt(ts*len(ts)*sr)
-    ts = ts*np.exp(1j*phase)
-    ts = np.fft.irfft(ts)
+    ts = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
     return ts
 
 
@@ -209,8 +206,8 @@ def ramp_ts(ts, direction):
 
     
 if __name__ == "__main__":
-    wave = Wave("JONSWAP")
-#    wave = Wave("Bretschneider")
+#    wave = Wave("JONSWAP")
+    wave = Wave("Bretschneider")
 #    wave = Wave("Pierson-Moskowitz")
 #    wave = Wave("NH Typical")
 #    wave = Wave("NH Extreme")
