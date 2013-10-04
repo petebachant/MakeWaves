@@ -18,7 +18,6 @@ Needs:
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
-import timeseries
 from wavemakerlimits import dispsolver
 
 
@@ -27,7 +26,22 @@ stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
 g = 9.81
-###
+
+
+def psd(t, data, window=None):
+    """Computes one-sided power spectral density.
+       Returns f, psd."""
+    dt = t[1] - t[0]
+    N = len(data)
+    data = data - np.mean(data)
+    if window == 'Hanning':
+        data = data*np.hanning(N)
+    f = np.fft.fftfreq(N, dt)
+    y = np.fft.fft(data)
+    f = f[0:N/2]
+    psd = (2*dt/N)*abs(y)**2
+    psd = np.real(psd[0:N/2])
+    return f, psd
 
 
 def spec2ts(spec, sr):
