@@ -62,8 +62,8 @@ water_depth = 2.44
 minperiod = 0.5
 maxperiod = 5.0
 
-periods = np.round(np.load("setting/periods.npy"), decimals=4)
-maxH = np.load("setting/maxH.npy")
+periods = np.round(np.load("settings/periods.npy"), decimals=4)
+maxH = np.load("settings/maxH.npy")
 minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
 maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
 
