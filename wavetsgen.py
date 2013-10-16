@@ -13,6 +13,25 @@ Needs:
   * Scale ratio logic
   * Correct elev2stroke calculation
 
+Removed parameters:
+        elif self.wavetype == "NH Extreme":
+            self.sig_height = 6.58
+            self.sig_period = 10.5
+            self.scale_ratio = 15.2
+            self.gamma = 3.95
+            self.sigma_A = 0.45
+            self.sigma_B = 0.15
+            self.P = 4.85
+            
+        elif self.wavetype == "NH Typical":
+            self.sig_height = 1.21
+            self.sig_period = 10.0
+            self.sig_period2 = 5.34
+            self.scale_ratio = 15.2
+            self.gamma1 = 6.75
+            self.gamma2 = 0.5
+            self.P = 4.34
+
 """
 
 import numpy as np
@@ -54,7 +73,7 @@ def spec2ts(spec, sr):
 def elev2stroke(ts_elev, waveheight, waveperiod):
     """Computes piston stroke from elevation time series.
     Still needs to be checked for random waves parameters."""
-    k = dispsolver(2*pi/waveperiod, water_depth, 2)
+    k = dispsolver(2*pi/waveperiod, water_depth, decimals=2)
     kh = k*water_depth
     factor = paddle_height/water_depth
     stroke = 4*(sinh(kh)/kh)*(kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh)
@@ -66,6 +85,7 @@ def stroke2volts(stroke):
     
 
 class Wave(object):
+    """Object that mathematically represents a wave."""
     def __init__(self, wavetype):
         self.wavetype = wavetype
         self.sr = 1024.0
@@ -88,24 +108,6 @@ class Wave(object):
             self.gamma = 3.3
             self.sigma_A = 0.07
             self.sigma_B = 0.09
-        
-        elif self.wavetype == "NH Extreme":
-            self.sig_height = 6.58
-            self.sig_period = 10.5
-            self.scale_ratio = 15.2
-            self.gamma = 3.95
-            self.sigma_A = 0.45
-            self.sigma_B = 0.15
-            self.P = 4.85
-            
-        elif self.wavetype == "NH Typical":
-            self.sig_height = 1.21
-            self.sig_period = 10.0
-            self.sig_period2 = 5.34
-            self.scale_ratio = 15.2
-            self.gamma1 = 6.75
-            self.gamma2 = 0.5
-            self.P = 4.34
             
         elif self.wavetype == "Pierson-Moskowitz":
             self.windspeed = 2.0
@@ -150,32 +152,6 @@ class Wave(object):
                 self.f**(-5)*np.exp(B)*self.gamma**A
                 self.period = self.sig_period
                 self.height = self.sig_height #Don't know about this...
-
-            elif self.wavetype == "NH Extreme":
-                """Needs to be checked. Doesn't work right."""
-                sigma = self.sigma_B
-                alpha = 0.0624/(0.230 + 0.0336*self.gamma - \
-                0.185*(1.9 + self.gamma)**(-1))
-                A = np.exp((-((self.f*self.sig_period - 1.0)**2))/(2*sigma**2))
-                B = -1.25*(self.sig_period*self.f)**(-4)
-                self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
-                self.f**(-self.P)*np.exp(B)*self.gamma**A
-                self.spec = self.spec/self.scale_ratio
-                self.period = self.sig_period/self.scale_ratio
-                self.height = self.sig_height/self.scale_ratio
-                #Don't know about this...
-                
-            elif self.wavetype == "NH Typical":
-                """Needs to be totally rewritten"""
-                sigma = self.sigma_A
-                alpha = 0.0624/(0.230 + 0.0336*self.gamma - \
-                0.185*(1.9 + self.gamma)**(-1))
-                A = np.exp((-((self.f*self.sig_period - 1.0)**2))/(2*sigma**2))
-                B = -1.25*(self.sig_period*self.f)**(-4)
-                self.spec = alpha*self.sig_height**2*self.sig_period**(-4)* \
-                self.f**(-self.P)*np.exp(B)*self.gamma**A
-                self.period = self.sig_period
-                self.height = self.sig_height #Don't know about this...
             
             elif self.wavetype == "Pierson-Moskowitz":
                 """Needs implementation of scale ratio, or not."""
@@ -202,7 +178,7 @@ class Wave(object):
         
     def comp_spec(self):
         t = np.arange(len(self.ts_elev))/self.sr
-        f, spec = timeseries.psd(t, self.ts_elev, window=None)
+        f, spec = psd(t, self.ts_elev, window=None)
         return f, spec
         
 
