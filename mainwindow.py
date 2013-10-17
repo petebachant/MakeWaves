@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Sep 11 13:47:42 2013
-#      by: PyQt4 UI code generator 4.9.5
+# Created: Wed Oct 16 23:41:13 2013
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -103,8 +112,6 @@ class Ui_MainWindow(object):
         self.combobox_randwavetype = QtGui.QComboBox(self.tab_2)
         self.combobox_randwavetype.setGeometry(QtCore.QRect(110, 10, 111, 22))
         self.combobox_randwavetype.setObjectName(_fromUtf8("combobox_randwavetype"))
-        self.combobox_randwavetype.addItem(_fromUtf8(""))
-        self.combobox_randwavetype.addItem(_fromUtf8(""))
         self.combobox_randwavetype.addItem(_fromUtf8(""))
         self.combobox_randwavetype.addItem(_fromUtf8(""))
         self.combobox_randwavetype.addItem(_fromUtf8(""))
@@ -263,7 +270,7 @@ class Ui_MainWindow(object):
         self.toolbar_main.addAction(self.action_start)
 
         self.retranslateUi(MainWindow)
-        self.tabwidget.setCurrentIndex(0)
+        self.tabwidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
         QtCore.QObject.connect(self.action_view_ts, QtCore.SIGNAL(_fromUtf8("triggered(bool)")), self.dock_time_series.setVisible)
         QtCore.QObject.connect(self.dock_time_series, QtCore.SIGNAL(_fromUtf8("visibilityChanged(bool)")), self.action_view_ts.setChecked)
@@ -272,68 +279,66 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MakeWaves", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_regparams.setItemText(0, QtGui.QApplication.translate("MainWindow", "Height and Period", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_regparams.setItemText(1, QtGui.QApplication.translate("MainWindow", "Height and Wavelength", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Wave Height (m):", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Wave Period (s):", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Wavelength (m):", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Set Parameters:", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabwidget.setTabText(self.tabwidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Regular", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_randwavetype.setItemText(0, QtGui.QApplication.translate("MainWindow", "Bretschneider", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_randwavetype.setItemText(1, QtGui.QApplication.translate("MainWindow", "JONSWAP", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_randwavetype.setItemText(2, QtGui.QApplication.translate("MainWindow", "NH Extreme", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_randwavetype.setItemText(3, QtGui.QApplication.translate("MainWindow", "NH Typical", None, QtGui.QApplication.UnicodeUTF8))
-        self.combobox_randwavetype.setItemText(4, QtGui.QApplication.translate("MainWindow", "Pierson-Moskowitz", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MakeWaves", None))
+        self.combobox_regparams.setItemText(0, _translate("MainWindow", "Height and Period", None))
+        self.combobox_regparams.setItemText(1, _translate("MainWindow", "Height and Wavelength", None))
+        self.label.setText(_translate("MainWindow", "Wave Height (m):", None))
+        self.label_2.setText(_translate("MainWindow", "Wave Period (s):", None))
+        self.label_3.setText(_translate("MainWindow", "Wavelength (m):", None))
+        self.label_4.setText(_translate("MainWindow", "Set Parameters:", None))
+        self.tabwidget.setTabText(self.tabwidget.indexOf(self.tab), _translate("MainWindow", "Regular", None))
+        self.combobox_randwavetype.setItemText(0, _translate("MainWindow", "Bretschneider", None))
+        self.combobox_randwavetype.setItemText(1, _translate("MainWindow", "JONSWAP", None))
+        self.combobox_randwavetype.setItemText(2, _translate("MainWindow", "Pierson-Moskowitz", None))
         item = self.table_rwaves.verticalHeaderItem(0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "0", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "0", None))
         item = self.table_rwaves.verticalHeaderItem(1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "1", None))
         item = self.table_rwaves.verticalHeaderItem(2)
-        item.setText(QtGui.QApplication.translate("MainWindow", "2", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "2", None))
         item = self.table_rwaves.horizontalHeaderItem(0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Parameter", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "Parameter", None))
         item = self.table_rwaves.horizontalHeaderItem(1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Value", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "Value", None))
         __sortingEnabled = self.table_rwaves.isSortingEnabled()
         self.table_rwaves.setSortingEnabled(False)
         item = self.table_rwaves.item(0, 0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Significant Wave Height (m)", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "Significant Wave Height (m)", None))
         item = self.table_rwaves.item(0, 1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "0.1", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "0.1", None))
         item = self.table_rwaves.item(1, 0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Significant Wave Period (s)", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "Significant Wave Period (s)", None))
         item = self.table_rwaves.item(1, 1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "1", None))
         item = self.table_rwaves.item(2, 0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Scale Ratio", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "Scale Ratio", None))
         item = self.table_rwaves.item(2, 1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("MainWindow", "1", None))
         self.table_rwaves.setSortingEnabled(__sortingEnabled)
-        self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Type:", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabwidget.setTabText(self.tabwidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Random", None, QtGui.QApplication.UnicodeUTF8))
-        self.dock_spectrum.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Output Spectrum", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Frequency (Hz)", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "View", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOptions.setTitle(QtGui.QApplication.translate("MainWindow", "Settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.toolbar_main.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Main Toolbar", None, QtGui.QApplication.UnicodeUTF8))
-        self.dock_time_series.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Output Time Series", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Time (s)", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("MainWindow", "(m)", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionRegular.setText(QtGui.QApplication.translate("MainWindow", "Regular", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionRandom.setText(QtGui.QApplication.translate("MainWindow", "Random", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_view_ts.setText(QtGui.QApplication.translate("MainWindow", "Output Time Series", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_view_spec.setText(QtGui.QApplication.translate("MainWindow", "Output Spectrum", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_wiki.setText(QtGui.QApplication.translate("MainWindow", "Wiki", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_about.setText(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_editsettings.setText(QtGui.QApplication.translate("MainWindow", "Recalculate Limits", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_start.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_start.setToolTip(QtGui.QApplication.translate("MainWindow", "Start Generating Waves", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_start.setShortcut(QtGui.QApplication.translate("MainWindow", "Space", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionRecording.setText(QtGui.QApplication.translate("MainWindow", "Recording...", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(_translate("MainWindow", "Spectrum Type:", None))
+        self.tabwidget.setTabText(self.tabwidget.indexOf(self.tab_2), _translate("MainWindow", "Random", None))
+        self.dock_spectrum.setWindowTitle(_translate("MainWindow", "Output Spectrum", None))
+        self.label_7.setText(_translate("MainWindow", "Frequency (Hz)", None))
+        self.menuFile.setTitle(_translate("MainWindow", "File", None))
+        self.menuView.setTitle(_translate("MainWindow", "View", None))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
+        self.menuOptions.setTitle(_translate("MainWindow", "Settings", None))
+        self.toolbar_main.setWindowTitle(_translate("MainWindow", "Main Toolbar", None))
+        self.dock_time_series.setWindowTitle(_translate("MainWindow", "Output Time Series", None))
+        self.label_6.setText(_translate("MainWindow", "Time (s)", None))
+        self.label_8.setText(_translate("MainWindow", "(m)", None))
+        self.actionRegular.setText(_translate("MainWindow", "Regular", None))
+        self.actionRandom.setText(_translate("MainWindow", "Random", None))
+        self.action_view_ts.setText(_translate("MainWindow", "Output Time Series", None))
+        self.action_view_spec.setText(_translate("MainWindow", "Output Spectrum", None))
+        self.action_wiki.setText(_translate("MainWindow", "Wiki", None))
+        self.action_about.setText(_translate("MainWindow", "About", None))
+        self.actionExit.setText(_translate("MainWindow", "Exit", None))
+        self.action_editsettings.setText(_translate("MainWindow", "Recalculate Limits", None))
+        self.action_start.setText(_translate("MainWindow", "Start", None))
+        self.action_start.setToolTip(_translate("MainWindow", "Start Generating Waves", None))
+        self.action_start.setShortcut(_translate("MainWindow", "Space", None))
+        self.actionRecording.setText(_translate("MainWindow", "Recording...", None))
 
 from PyQt4 import Qwt5
 import resources_rc

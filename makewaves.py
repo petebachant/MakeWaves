@@ -51,8 +51,6 @@ pm_params = [("Wind Speed", 2.0),
              
 rw_params = {"Bretschneider" : bret_params,
              "JONSWAP" : jonswap_params,
-             "NH Extreme" : nhextreme_params,
-             "NH Typical" : nhtypical_params,
              "Pierson-Moskowitz" : pm_params}
                   
              
@@ -273,12 +271,6 @@ class MainWindow(QtGui.QMainWindow):
         self.setup_spinboxes(len(self.rw_params))
         row = 0
         
-        # Disable start button for NH Typical and NH Extreme for now
-        if "NH" in self.rw_type:
-            self.ui.action_start.setDisabled(True)
-        else:
-            self.ui.action_start.setEnabled(True)    
-        
         for parameter, value in self.rw_params:
             self.ui.table_rwaves.setItem(row, 0, QTableWidgetItem(parameter))
             self.spinboxes_rw[row].setValue(value)
@@ -289,7 +281,7 @@ class MainWindow(QtGui.QMainWindow):
             if "Period" in parameter:
                 self.spinboxes_rw[row].setMaximum(4)
                 self.spinboxes_rw[row].setMinimum(1)
-            if "NH" in self.rw_type:
+            if "Scale Ratio" in parameter:
                 self.spinboxes_rw[row].setDisabled(True)
             row += 1
 
