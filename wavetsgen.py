@@ -96,14 +96,17 @@ def elev2stroke2(ts_elev, sr):
     """
     # Find kh vector for omegas
     N = len(ts_elev)
-    kh = np.zeros(N)
-    for n in xrange(N):
+    HS = np.ones(N)*1e10
+    # Only compute HS for low frequencies (1/4 of 128 Hz)
+    for n in xrange(8, N//4):
         f = n*sr/N*(1 - 2/N) + 1/(sr*N)
         omega = 2*pi*f
-        kh[n] = water_depth*dispsolver(omega, water_depth, decimals=1)
-    HS = (4*sinh(kh)/kh)*((kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh))
+        kh = water_depth*dispsolver(omega, water_depth, decimals=1)
+        HS[n] = (4*sinh(kh)/kh)*((kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh))
+    HS[np.where(np.isnan(HS))[0]] = 1e6
     fft_ts = np.fft.fft(ts_elev)
     A = np.absolute(fft_ts)/HS*paddle_height/water_depth
+#    A = np.absolute(fft_ts) # Use this to check reconstruction of ts_elev
     ts_stroke = np.fft.ifft(A*np.exp(1j*np.angle(fft_ts)))
     return ts_stroke.real
     
@@ -118,7 +121,7 @@ class Wave(object):
         self.wavetype = wavetype
         self.sr = 256.0
         self.buffsize = 30722 # Corresponds to 2 minutes of unique waves
-        self.sbuffsize = 256
+        self.sbuffsize = 256 # Must be an int
         
         if self.wavetype == "Regular":
             self.height = 0.1
@@ -234,13 +237,13 @@ if __name__ == "__main__":
     wave = Wave("Pierson-Moskowitz")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
-    wave.gen_ts_stroke()
+    wave.gen_ts_volts()
     print wave.period
     ts = wave.ts_elev
     t = np.arange(len(ts))/wave.sr
     
     f, s = wave.comp_spec()
-    f2, s2 = wave.f, wave.spec
+    f2, s2 = psd(t, ts)
         
     plt.close("all")
     plt.plot(t, ts)

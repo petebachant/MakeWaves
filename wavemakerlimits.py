@@ -23,21 +23,21 @@ max_H_d = 0.65
 def dispsolver(rad_frequency, depth, decimals=2):
     """Solves for surface wavenumber to a specified number of decimals."""
     g = 9.81
-    k = np.arange(10**-(decimals+1), 30, 10**-(decimals))
+    k = np.arange(0, 30, 10**-(decimals))
     r = np.abs(rad_frequency**2 - g*k*np.tanh(k*depth))
-    if np.min(r) > 10**(-decimals+2):
-        return 50
-    else:
-        return k[np.where(r == np.min(r))[0][0]]
+#    if np.min(r) > 10**(-decimals-1):
+#        return np.nan
+#    else:
+    return k[np.where(r == np.min(r))[0][0]]
 
     
 def revdispsolver(wavenumber, depth, decimals=2):
     """Returns radian frequency given wavenumber and depth"""
     g = 9.81
     k = wavenumber
-    sigma = np.arange(10**-(decimals+1), 10, 10**-(decimals))
+    sigma = np.arange(0, 10, 10**-(decimals))
     r = np.abs(sigma**2 - g*k*np.tanh(k*depth))
-    if np.min(r) > 10**(-decimals+1):
+    if np.min(r) > 10**(-decimals):
         return np.nan
     else:
         return sigma[np.where(r == np.min(r))[0][0]]
