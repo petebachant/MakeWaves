@@ -412,12 +412,9 @@ class WaveGen(QtCore.QThread):
         self.ts_plot = self.wave.ts_elev
         self.dataw = self.wave.ts_volts
         
-        # If random waves, divide up time series into 64 parts
+        # If random waves, divide up time series into 120 256 sample parts
         if self.wavetype != "Regular":
-            tsparts = np.zeros((64, 1024))
-            for n in range(64):
-                tsparts[n, :] = self.dataw[n*1024:(n+1)*1024]
-                
+            tsparts = np.reshape(self.dataw, (120, 256))
             self.dataw = tsparts[0, :]
         
         # Compute spectrum for plot
@@ -431,7 +428,7 @@ class WaveGen(QtCore.QThread):
         
         self.AOtaskHandle = daqmx.TaskHandle()
         daqmx.CreateTask("", self.AOtaskHandle)
-        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao1", "", 
+        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "", 
                                   -6.0, 6.0, daqmx.Val_Volts, None)
         daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr, 
                                daqmx.Val_Rising, daqmx.Val_ContSamps, 
@@ -468,8 +465,8 @@ class WaveGen(QtCore.QThread):
             writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
             if writeSpaceAvail >= self.buffsize:
                 if self.wavetype != "Regular":
-                    if i >= 64:
-                        self.dataw = tsparts[i % 64, :]
+                    if i >= 120:
+                        self.dataw = tsparts[i % 120, :]
                     else: 
                         self.dataw = tsparts[i, :]
                 daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 
@@ -479,8 +476,8 @@ class WaveGen(QtCore.QThread):
         
         # After disabled, initiate rampdown timeseries
         if self.wavetype != "Regular":
-            if i >= 64:
-                self.rampdown_ts = ramp_ts(tsparts[i % 64, :], "down")
+            if i >= 120:
+                self.rampdown_ts = ramp_ts(tsparts[i % 120, :], "down")
             else:
                 self.rampdown_ts = ramp_ts(tsparts[i, :], "down")
         else:

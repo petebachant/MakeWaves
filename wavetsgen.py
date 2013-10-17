@@ -33,7 +33,7 @@ Removed parameters:
             self.P = 4.34
 
 """
-
+from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
@@ -66,8 +66,8 @@ def psd(t, data, window=None):
 def spec2ts(spec, sr):
     """Create time series with random (normal) phases from power spectrum."""
     phase = np.random.normal(0, pi, len(spec))
-    ts = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
-    return ts
+    ts_elev = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
+    return ts_elev
 
 
 def elev2stroke(ts_elev, waveheight, waveperiod):
@@ -79,6 +79,34 @@ def elev2stroke(ts_elev, waveheight, waveperiod):
     stroke = 4*(sinh(kh)/kh)*(kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh)
     return ts_elev*factor/stroke
     
+def spec2stroke(omega, spec, sr):
+    """Converts a spectrum into piston stroke"""
+    phase = np.random.normal(0, pi, len(spec))
+    A = np.sqrt(2*spec*(omega[1] - omega[0]))
+    t = np.arange(0, len(spec))/sr
+    ts_stroke = np.zeros(len(t))
+    for n in xrange(len(omega)):
+        ts_elev = (A[n]*np.sin(omega[n]*t + phase[n]))
+        ts_stroke += elev2stroke(ts_elev, A[n]*2, 2*np.pi/omega[n])
+    return ts_stroke
+
+def elev2stroke2(ts_elev, sr):
+    """Converts an elevation time series to piston stroke time series
+    HS=(4*sinh(x)/x)*((x*sinh(x)-cosh(x)+1)/(sinh(2*x)+2*x));    
+    """
+    # Find kh vector for omegas
+    N = len(ts_elev)
+    kh = np.zeros(N)
+    for n in xrange(N):
+        f = n*sr/N*(1 - 2/N) + 1/(sr*N)
+        omega = 2*pi*f
+        kh[n] = water_depth*dispsolver(omega, water_depth, decimals=1)
+    HS = (4*sinh(kh)/kh)*((kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh))
+    fft_ts = np.fft.fft(ts_elev)
+    A = np.absolute(fft_ts)/HS*paddle_height/water_depth
+    ts_stroke = np.fft.ifft(A*np.exp(1j*np.angle(fft_ts)))
+    return ts_stroke.real
+    
 
 def stroke2volts(stroke):
     return stroke*stroke_cal
@@ -88,9 +116,9 @@ class Wave(object):
     """Object that mathematically represents a wave."""
     def __init__(self, wavetype):
         self.wavetype = wavetype
-        self.sr = 1024.0
-        self.buffsize = 65538
-        self.sbuffsize = 1024
+        self.sr = 256.0
+        self.buffsize = 30722 # Corresponds to 2 minutes of unique waves
+        self.sbuffsize = 256
         
         if self.wavetype == "Regular":
             self.height = 0.1
@@ -123,17 +151,18 @@ class Wave(object):
             
         else:
             """Generate random wave time series"""
-            nfreq = self.buffsize/2 
+            nfreq = self.buffsize/2
             f_start = self.sr/self.buffsize
             f_end = self.sr/2
             self.f = np.linspace(f_start, f_end, nfreq)
-            omega = 2*pi*self.f
+            self.omega = 2*pi*self.f
     
             if self.wavetype=="Bretschneider":
-                sig_omega = 2*pi/self.sig_period
+                f = self.f
+                f0 = 1/self.sig_period
                 sig_height = self.sig_height
-                self.spec = 0.3125*sig_omega**4/omega**5*sig_height**2*\
-                np.exp(-5.0*sig_omega**4/(4.0*omega**4))
+                self.spec = (5/16)*sig_height**2/f0/(f/f0)**5\
+                        *np.exp(-5/4*(f/f0)**-4)
                 self.height = self.sig_height
                 self.period = self.sig_period
                 
@@ -170,7 +199,11 @@ class Wave(object):
     def gen_ts_stroke(self):
         """Needs algorithm for random waves"""
         self.gen_ts()
-        self.ts_stroke = elev2stroke(self.ts_elev, self.height, self.period)
+        if self.wavetype == "Regular":
+            self.ts_stroke = elev2stroke(self.ts_elev, self.height, 
+                                         self.period)
+        else:
+            self.ts_stroke = elev2stroke2(self.ts_elev, self.sr)
         
     def gen_ts_volts(self):
         self.gen_ts_stroke()
@@ -197,24 +230,25 @@ def ramp_ts(ts, direction):
     
 if __name__ == "__main__":
 #    wave = Wave("JONSWAP")
-    wave = Wave("Bretschneider")
-#    wave = Wave("Pierson-Moskowitz")
-#    wave = Wave("NH Typical")
-#    wave = Wave("NH Extreme")
+#    wave = Wave("Bretschneider")
+    wave = Wave("Pierson-Moskowitz")
 #    wave = Wave("Regular")
 #    wave.height = 0.3
-    wave.gen_ts_volts()
-    
+    wave.gen_ts_stroke()
+    print wave.period
     ts = wave.ts_elev
     t = np.arange(len(ts))/wave.sr
     
     f, s = wave.comp_spec()
     f2, s2 = wave.f, wave.spec
-    
+        
     plt.close("all")
+    plt.plot(t, ts)
+
+    plt.figure()
     plt.plot(f, s)
     plt.hold(True)
     plt.plot(f2, s2)
-    plt.xlim((0,5))
+    plt.xlim((0,2))
     plt.show()
     
