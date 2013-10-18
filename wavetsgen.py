@@ -40,7 +40,7 @@ from numpy import pi, sinh, cosh
 from wavemakerlimits import dispsolver
 
 
-# Define some constants
+# Constants
 stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
@@ -62,13 +62,14 @@ def psd(t, data, window=None):
     psd = np.real(psd[0:N/2])
     return f, psd
 
-
 def spec2ts(spec, sr):
     """Create time series with random (normal) phases from power spectrum."""
     phase = np.random.normal(0, pi, len(spec))
     ts_elev = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
+    # Taper down last second of ts so it can repeat
+    ramp = np.hanning(sr*2)[sr:]
+    ts_elev[-sr:] = ts_elev[-sr:]*ramp
     return ts_elev
-
 
 def elev2stroke(ts_elev, waveheight, waveperiod):
     """Computes piston stroke from elevation time series.
@@ -91,26 +92,24 @@ def spec2stroke(omega, spec, sr):
     return ts_stroke
 
 def elev2stroke2(ts_elev, sr):
-    """Converts an elevation time series to piston stroke time series
+    """Converts a random elevation time series to piston stroke time series
     HS=(4*sinh(x)/x)*((x*sinh(x)-cosh(x)+1)/(sinh(2*x)+2*x));    
     """
     # Find kh vector for omegas
     N = len(ts_elev)
-    HS = np.ones(N)*1e10
-    # Only compute HS for low frequencies (1/4 of 128 Hz)
-    for n in xrange(8, N//4):
+    HS = np.ones(N)*1e12
+    # Only compute HS for frequencies corresponding to T = 0.25--8 Hz
+    for n in xrange(N//1024, N//32):
         f = n*sr/N*(1 - 2/N) + 1/(sr*N)
         omega = 2*pi*f
         kh = water_depth*dispsolver(omega, water_depth, decimals=1)
         HS[n] = (4*sinh(kh)/kh)*((kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh))
-    HS[np.where(np.isnan(HS))[0]] = 1e6
+    HS[np.where(np.isnan(HS))[0]] = 1e12
     fft_ts = np.fft.fft(ts_elev)
     A = np.absolute(fft_ts)/HS*paddle_height/water_depth
-#    A = np.absolute(fft_ts) # Use this to check reconstruction of ts_elev
     ts_stroke = np.fft.ifft(A*np.exp(1j*np.angle(fft_ts)))
     return ts_stroke.real
     
-
 def stroke2volts(stroke):
     return stroke*stroke_cal
     
@@ -122,16 +121,13 @@ class Wave(object):
         self.sr = 256.0
         self.buffsize = 30722 # Corresponds to 2 minutes of unique waves
         self.sbuffsize = 256 # Must be an int
-        
         if self.wavetype == "Regular":
             self.height = 0.1
             self.period = 1.0
-        
         elif self.wavetype == "Bretschneider":
             self.sig_height = 0.1
             self.sig_period = 1.0
             self.scale_ratio = 1.0
-            
         elif self.wavetype == "JONSWAP":
             self.sig_height = 0.1
             self.sig_period = 1.0
@@ -139,19 +135,16 @@ class Wave(object):
             self.gamma = 3.3
             self.sigma_A = 0.07
             self.sigma_B = 0.09
-            
         elif self.wavetype == "Pierson-Moskowitz":
             self.windspeed = 2.0
             self.scale_ratio = 1.0
 
-            
     def gen_ts(self):
         if self.wavetype == "Regular":
             """Generate a regular wave time series"""
             self.sr = self.sbuffsize/self.period
             t = np.linspace(0, 2*pi, self.sbuffsize)
             self.ts_elev = self.height/2*np.sin(t)
-            
         else:
             """Generate random wave time series"""
             nfreq = self.buffsize/2
@@ -194,10 +187,8 @@ class Wave(object):
                 self.spec = alpha*g**2/((2*pi)**4*f**5)*np.exp(-B/f**4)
                 self.height = 0.21*self.windspeed**2/g
                 self.period = 2*pi*self.windspeed/(0.877*g)
-                
             # Final step: compute time series    
             self.ts_elev = spec2ts(self.spec, self.sr)
-            
             
     def gen_ts_stroke(self):
         """Needs algorithm for random waves"""
@@ -221,13 +212,10 @@ class Wave(object):
 def ramp_ts(ts, direction):
     rampfull = np.ones(len(ts))
     ramp = np.hanning(len(ts))
-    
     if direction == "up":
         rampfull[:len(ramp)/2] = ramp[:len(ramp)/2]
-        
     elif direction == "down":
         rampfull[-len(ramp)/2:] = ramp[len(ramp)/2:]
-        
     return ts*rampfull
 
     
@@ -238,20 +226,21 @@ if __name__ == "__main__":
 #    wave = Wave("Regular")
 #    wave.height = 0.3
     wave.gen_ts_volts()
-    print wave.period
-    ts = wave.ts_elev
+    ts = wave.ts_stroke
     t = np.arange(len(ts))/wave.sr
+    print len(ts)
     
-    f, s = wave.comp_spec()
-    f2, s2 = psd(t, ts)
+#    f, s = wave.comp_spec()
+#    f2, s2 = wave.f, wave.spec
+    f, s = psd(t, ts)
         
     plt.close("all")
-    plt.plot(t, ts)
+#    plt.plot(t, ts)
 
     plt.figure()
     plt.plot(f, s)
     plt.hold(True)
-    plt.plot(f2, s2)
-    plt.xlim((0,2))
+#    plt.plot(f2, s2)
+    plt.xlim((0,5))
     plt.show()
     

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Oct 16 23:41:13 2013
+# Created: Thu Oct 17 21:29:30 2013
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,7 +27,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(618, 331)
-        MainWindow.setMinimumSize(QtCore.QSize(618, 0))
+        MainWindow.setMinimumSize(QtCore.QSize(618, 331))
+        MainWindow.setMaximumSize(QtCore.QSize(618, 331))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/makewaves_icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -192,12 +193,12 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
-        self.menuView = QtGui.QMenu(self.menubar)
-        self.menuView.setObjectName(_fromUtf8("menuView"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
         self.menuOptions = QtGui.QMenu(self.menubar)
         self.menuOptions.setObjectName(_fromUtf8("menuOptions"))
+        self.menuView = QtGui.QMenu(self.menubar)
+        self.menuView.setObjectName(_fromUtf8("menuView"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -257,12 +258,12 @@ class Ui_MainWindow(object):
         self.actionRecording = QtGui.QAction(MainWindow)
         self.actionRecording.setObjectName(_fromUtf8("actionRecording"))
         self.menuFile.addAction(self.actionExit)
-        self.menuView.addAction(self.action_view_ts)
-        self.menuView.addAction(self.action_view_spec)
         self.menuHelp.addAction(self.action_wiki)
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.action_about)
         self.menuOptions.addAction(self.action_editsettings)
+        self.menuView.addAction(self.action_view_spec)
+        self.menuView.addAction(self.action_view_ts)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuOptions.menuAction())
@@ -272,10 +273,6 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabwidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
-        QtCore.QObject.connect(self.action_view_ts, QtCore.SIGNAL(_fromUtf8("triggered(bool)")), self.dock_time_series.setVisible)
-        QtCore.QObject.connect(self.dock_time_series, QtCore.SIGNAL(_fromUtf8("visibilityChanged(bool)")), self.action_view_ts.setChecked)
-        QtCore.QObject.connect(self.action_view_spec, QtCore.SIGNAL(_fromUtf8("triggered(bool)")), self.dock_spectrum.setVisible)
-        QtCore.QObject.connect(self.dock_spectrum, QtCore.SIGNAL(_fromUtf8("visibilityChanged(bool)")), self.action_view_spec.setChecked)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -320,9 +317,9 @@ class Ui_MainWindow(object):
         self.dock_spectrum.setWindowTitle(_translate("MainWindow", "Output Spectrum", None))
         self.label_7.setText(_translate("MainWindow", "Frequency (Hz)", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
-        self.menuView.setTitle(_translate("MainWindow", "View", None))
         self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
         self.menuOptions.setTitle(_translate("MainWindow", "Settings", None))
+        self.menuView.setTitle(_translate("MainWindow", "View", None))
         self.toolbar_main.setWindowTitle(_translate("MainWindow", "Main Toolbar", None))
         self.dock_time_series.setWindowTitle(_translate("MainWindow", "Output Time Series", None))
         self.label_6.setText(_translate("MainWindow", "Time (s)", None))

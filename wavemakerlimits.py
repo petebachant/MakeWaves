@@ -37,10 +37,10 @@ def revdispsolver(wavenumber, depth, decimals=2):
     k = wavenumber
     sigma = np.arange(0, 10, 10**-(decimals))
     r = np.abs(sigma**2 - g*k*np.tanh(k*depth))
-    if np.min(r) > 10**(-decimals):
-        return np.nan
-    else:
-        return sigma[np.where(r == np.min(r))[0][0]]
+#    if np.min(r) > 10**(-decimals):
+#        return np.nan
+#    else:
+    return sigma[np.where(r == np.min(r))[0][0]]
         
 
 def height_to_stroke_amp(wave_height, period, flap_height, depth):
