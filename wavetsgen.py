@@ -67,6 +67,8 @@ def spec2ts(spec, sr):
     phase = np.random.normal(0, pi, len(spec))
     ts_elev = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
     # Taper down last second of ts so it can repeat
+    ramp = np.hanning(sr*2)[0:sr]
+    ts_elev[:sr] = ts_elev[:sr]*ramp
     ramp = np.hanning(sr*2)[sr:]
     ts_elev[-sr:] = ts_elev[-sr:]*ramp
     return ts_elev
@@ -230,17 +232,17 @@ if __name__ == "__main__":
     t = np.arange(len(ts))/wave.sr
     print len(ts)
     
-#    f, s = wave.comp_spec()
-#    f2, s2 = wave.f, wave.spec
-    f, s = psd(t, ts)
+    f, s = wave.comp_spec()
+    f2, s2 = wave.f, wave.spec
+#    f, s = psd(t, ts)
         
     plt.close("all")
-#    plt.plot(t, ts)
+    plt.plot(t, ts)
 
     plt.figure()
     plt.plot(f, s)
     plt.hold(True)
-#    plt.plot(f2, s2)
+    plt.plot(f2, s2)
     plt.xlim((0,5))
     plt.show()
     
