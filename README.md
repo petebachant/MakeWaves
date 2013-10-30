@@ -5,22 +5,17 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
 
 To-do
 -----
-  * Figure out why random wave output amplitudes seem to be half what they are compared to Random Seas.
-    * Run through and check all math for random waves again!
   * Calculate limits for random wave parameters based on Random Seas LabVIEW code.
     * This will involve checking if the maximum piston stroke is beyond the physical limit.
-  * Listen to ACS controller for E-stop presses, or better yet hard wire E-stop into digital inputs of NI DAQ?
   * Properly organize folders of code, resources, etc. 
-  * Put searching for new wave height limits in its own thread so GUI doesn't feel laggy -- maybe not necessary.
-  * Make regular waves in a similar way to random, i.e. use sub-buffers so ramping down can happen more quickly. 
-  * Implement scale ratio in Pierson-Moskowitz waves. Look in comments of wavetsgen.py for more info.
+  * Make regular waves in a similar way to random, i.e. use sub-buffers so ramping down can happen more quickly?
 
 Dependencies
 --------
   * Python 2.7x
   * numpy
   * matplotlib (for testing output of wavetsgen.py)
-  * daqmx.py (see misc_python)
+  * daqmx.py
   * PyDAQmx
   * PyQt4
   * NI DAQmx driver
