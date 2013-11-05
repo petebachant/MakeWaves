@@ -327,7 +327,7 @@ class MainWindow(QtGui.QMainWindow):
         QMessageBox.about(self, "About MakeWaves", about_text)
         
     def on_wiki(self):
-        url = QUrl("http://pxl3.me/unhoelab/wiki/doku.php?id=tow_tank:operation:wavemaker")
+        url = QUrl("http://marine.unh.edu/oelab/wiki/doku.php?id=tow_tank:operation:wavemaker")
         QDesktopServices.openUrl(url)
         
     def closeEvent(self, event):
