@@ -15,7 +15,7 @@ Dependencies
   * Python 2.7x
   * numpy
   * matplotlib (for testing output of wavetsgen.py)
-  * daqmx.py
+  * daqmx
   * PyDAQmx
   * PyQt4
   * NI DAQmx driver
@@ -36,4 +36,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see http://www.gnu.org/licenses.
