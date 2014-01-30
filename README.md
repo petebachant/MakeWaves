@@ -2,13 +2,11 @@ MakeWaves
 =========
 MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. The app is still in development.
 
-
 To-do
 -----
-  * Calculate limits for random wave parameters based on Random Seas LabVIEW code.
-    * This will involve checking if the maximum piston stroke is beyond the physical limit.
+  * Calculate safe limits for random wave parameters based on Random Seas LabVIEW code.
+    This will involve checking if the maximum piston stroke is beyond the physical limit.
   * Properly organize folders of code, resources, etc. 
-  * Make regular waves in a similar way to random, i.e. use sub-buffers so ramping down can happen more quickly?
 
 Dependencies
 --------
@@ -19,7 +17,6 @@ Dependencies
   * PyDAQmx
   * PyQt4
   * NI DAQmx driver
-
 
 License
 -------
