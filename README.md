@@ -10,11 +10,11 @@ To-do
 
 Dependencies
 --------
-  * Python 2.7x
-  * numpy
+  * Python 2.7
+  * Numpy
   * matplotlib (for testing output of wavetsgen.py)
-  * daqmx
-  * PyDAQmx
+  * [daqmx](http://github.com/petebachant/daqmx.git)
+  * [PyDAQmx](http://github.com/clade/PyDAQmx.git)
   * PyQt4
   * NI DAQmx driver
 
