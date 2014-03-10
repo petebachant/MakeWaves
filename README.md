@@ -7,7 +7,7 @@ Contributing
 
 See the [wiki](https://github.com/petebachant/MakeWaves/wiki#wiki-contributing).
 
-## To-do ##
+### To-do ###
   * Calculate safe limits for random wave parameters based on Random Seas LabVIEW code.
     This will involve checking if the maximum piston stroke is beyond the physical limit.
   * Properly organize folders of code, resources, etc. 
