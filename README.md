@@ -11,7 +11,7 @@ See the [wiki](https://github.com/petebachant/MakeWaves/wiki#wiki-contributing).
   * Calculate safe limits for random wave parameters based on Random Seas LabVIEW code.
     This will involve checking if the maximum piston stroke is beyond the physical limit.
   * Confirm mathematical accuracy of voltage time series generation in `wavetsgen.py` compared with `Random Seas.vi`.
-  * Properly organize folders of code, resources, etc. 
+  * Generate higher order regular (Stokes) waves?
 
 Dependencies
 --------
