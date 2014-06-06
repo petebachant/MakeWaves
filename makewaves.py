@@ -5,6 +5,7 @@ Created on Sun Jun 02 08:53:07 2013
 @author: Pete
 
 """
+from __future__ import division, print_function
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtGui
@@ -352,7 +353,7 @@ class MainWindow(QtGui.QMainWindow):
                 dialog.close()
      
            
-class WaveGen(QtCore.QThread):
+class WaveGen(QThread):
     def __init__(self, wavetype):
         QtCore.QThread.__init__(self)
         self.wavetype = wavetype
@@ -465,7 +466,7 @@ class WaveGen(QtCore.QThread):
         self.stopgen.start()
         
 
-class WaveStop(QtCore.QThread):
+class WaveStop(QThread):
     def __init__(self, wavegen):
         QtCore.QThread.__init__(self)
         self.wavegen = wavegen

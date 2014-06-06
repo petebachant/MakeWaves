@@ -8,7 +8,7 @@ This module replicates the logic of the Regular Waves VI to calculate a
 safe wave height.
 
 """
-from __future__ import division
+from __future__ import division, print_function
 import numpy as np
 
 max_halfstroke = 0.16 # Was 0.16
@@ -93,7 +93,7 @@ def findlimits(plotchoice=False):
     
     for n in range(len(periods)):
         progress = n/len(periods)*100
-        print "Progress:", str(progress)+"%"
+        print("Progress:", str(progress)+"%")
         mh[n] = calc_safe_height(50, periods[n])
     
     if plotchoice:

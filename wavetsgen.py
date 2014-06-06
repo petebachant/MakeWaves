@@ -33,7 +33,7 @@ Removed parameters:
             self.P = 4.34
 
 """
-from __future__ import division
+from __future__ import division, print_function
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     wave.gen_ts_volts()
     ts = wave.ts_stroke
     t = np.arange(len(ts))/wave.sr
-    print len(ts)
+    print(len(ts))
     
     f, s = wave.comp_spec()
     f2, s2 = wave.f, wave.spec
