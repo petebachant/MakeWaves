@@ -130,26 +130,36 @@ class MainWindow(QtGui.QMainWindow):
         # Create time series plot
         self.plot_ts = self.ui.plot_ts
         self.plot_ts.setCanvasBackground(Qt.white)
+        font = QtGui.QFont("default", pointSize=10)
+        label = Qwt.QwtText("Elevation (m)")
+        label.setFont(font)
+        self.plot_ts.setAxisTitle(0, label)
+        label.setText("Time (s)")
+        self.plot_ts.setAxisTitle(2, label)
         self.grid = Qwt.QwtPlotGrid()
         self.grid.attach(self.plot_ts)
         self.grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
         self.curve_ts = Qwt.QwtPlotCurve('')
         self.curve_ts.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
         self.pen = QPen(QColor('black'))
-        self.pen.setWidth(0)
+        self.pen.setWidth(1.5)
         self.curve_ts.setPen(self.pen)
         self.curve_ts.attach(self.plot_ts)
         
         # Create output spectrum plot
         self.plot_spec = self.ui.plot_spec
         self.plot_spec.setCanvasBackground(Qt.white)
+        label.setText("Spectral density")
+        self.plot_spec.setAxisTitle(0, label)
+        label.setText("Frequency (Hz)")
+        self.plot_spec.setAxisTitle(2, label)
         self.grid = Qwt.QwtPlotGrid()
         self.grid.attach(self.plot_spec)
         self.grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
         self.curve_spec = Qwt.QwtPlotCurve('')
         self.curve_spec.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
         self.pen = QPen(QColor('black'))
-        self.pen.setWidth(0)
+        self.pen.setWidth(1.5)
         self.curve_spec.setPen(self.pen)
         self.curve_spec.attach(self.plot_spec)
         

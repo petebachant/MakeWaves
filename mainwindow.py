@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Oct 17 21:29:30 2013
+# Created: Fri Jun 06 14:36:35 2014
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -183,9 +183,6 @@ class Ui_MainWindow(object):
         self.plot_spec.setGeometry(QtCore.QRect(10, 10, 291, 201))
         self.plot_spec.setStyleSheet(_fromUtf8("font: 8pt \"MS Shell Dlg 2\";"))
         self.plot_spec.setObjectName(_fromUtf8("plot_spec"))
-        self.label_7 = QtGui.QLabel(self.dockWidgetContents)
-        self.label_7.setGeometry(QtCore.QRect(140, 210, 81, 20))
-        self.label_7.setObjectName(_fromUtf8("label_7"))
         self.dock_spectrum.setWidget(self.dockWidgetContents)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -220,12 +217,6 @@ class Ui_MainWindow(object):
         self.plot_ts.setGeometry(QtCore.QRect(10, 10, 291, 201))
         self.plot_ts.setStyleSheet(_fromUtf8("font: 8pt \"MS Shell Dlg 2\";"))
         self.plot_ts.setObjectName(_fromUtf8("plot_ts"))
-        self.label_6 = QtGui.QLabel(self.dockWidgetContents_2)
-        self.label_6.setGeometry(QtCore.QRect(150, 213, 46, 20))
-        self.label_6.setObjectName(_fromUtf8("label_6"))
-        self.label_8 = QtGui.QLabel(self.dockWidgetContents_2)
-        self.label_8.setGeometry(QtCore.QRect(0, 90, 16, 16))
-        self.label_8.setObjectName(_fromUtf8("label_8"))
         self.dock_time_series.setWidget(self.dockWidgetContents_2)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dock_time_series)
         self.actionRegular = QtGui.QAction(MainWindow)
@@ -315,15 +306,12 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Spectrum Type:", None))
         self.tabwidget.setTabText(self.tabwidget.indexOf(self.tab_2), _translate("MainWindow", "Random", None))
         self.dock_spectrum.setWindowTitle(_translate("MainWindow", "Output Spectrum", None))
-        self.label_7.setText(_translate("MainWindow", "Frequency (Hz)", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
         self.menuOptions.setTitle(_translate("MainWindow", "Settings", None))
         self.menuView.setTitle(_translate("MainWindow", "View", None))
         self.toolbar_main.setWindowTitle(_translate("MainWindow", "Main Toolbar", None))
         self.dock_time_series.setWindowTitle(_translate("MainWindow", "Output Time Series", None))
-        self.label_6.setText(_translate("MainWindow", "Time (s)", None))
-        self.label_8.setText(_translate("MainWindow", "(m)", None))
         self.actionRegular.setText(_translate("MainWindow", "Regular", None))
         self.actionRandom.setText(_translate("MainWindow", "Random", None))
         self.action_view_ts.setText(_translate("MainWindow", "Output Time Series", None))
