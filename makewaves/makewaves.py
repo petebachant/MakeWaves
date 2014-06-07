@@ -19,6 +19,12 @@ import daqmx
 import time
 from wavetsgen import Wave, ramp_ts
 
+_thisdir = sys.prefix + "/Lib/site-packages/makewaves"
+
+if not os.path.isdir(_thisdir):
+    _thisdir = ""
+else:
+    _thisdir += "/"
 
 # Spectral parameters for random waves
 bret_params = [("Significant Wave Height", 0.1),
@@ -63,11 +69,12 @@ minperiod = 0.5
 maxperiod = 5.0
 
 # See if limits data exist and generate is need be
-if not os.path.isfile("settings.periods.npy") or not os.path.isfile("settings.periods.npy"):
+if not os.path.isfile(_thisdir + "settings/periods.npy") or \
+    not os.path.isfile(_thisdir + "settings/maxH.npy"):
     wml.findlimits()
 
-periods = np.round(np.load("settings/periods.npy"), decimals=4)
-maxH = np.load("settings/maxH.npy")
+periods = np.round(np.load(_thisdir + "settings/periods.npy"), decimals=4)
+maxH = np.load(_thisdir + "settings/maxH.npy")
 minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
 maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
 
@@ -357,7 +364,7 @@ class MainWindow(QtGui.QMainWindow):
                 layout.addWidget(pbar, 0, 0)
                 dialog.setLayout(layout)
                 dialog.setWindowTitle("Ramping down...")
-                dialog.setWindowIcon(QtGui.QIcon("icons/makewaves_icon.svg"))
+                dialog.setWindowIcon(QtGui.QIcon(_thisdir + "icons/makewaves_icon.svg"))
                 dialog.show()
                 progress = 0
                 while not self.wavegen.cleared:
@@ -502,7 +509,7 @@ def main():
     app = QtGui.QApplication(sys.argv)
 
     w = MainWindow()
-    w.setWindowIcon(QtGui.QIcon("icons/makewaves_icon.svg"))
+    w.setWindowIcon(QtGui.QIcon(_thisdir + "icons/makewaves_icon.svg"))
     w.show()
     
     sys.exit(app.exec_())
