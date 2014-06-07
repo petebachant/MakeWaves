@@ -1,1 +1,1 @@
-python run_makewaves.py 
+python "import makewaves \n makewaves.main()" 

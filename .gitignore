@@ -1,1 +1,1 @@
-*.pycbuild/__pycache__/
+# Ignore compiled python files*.pycbuild/__pycache__/###

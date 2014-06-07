@@ -1,3 +1,0 @@
-import makewaves
-
-makewaves.main()

@@ -10,6 +10,7 @@ safe wave height.
 """
 from __future__ import division, print_function
 import numpy as np
+import os
 
 max_halfstroke = 0.16 # Was 0.16
 flap_height = 3.3147
@@ -102,6 +103,9 @@ def findlimits(plotchoice=False):
         
         plt.plot(periods, mh)
         
+    if not os.path.isdir("settings"):
+        os.mkdir("settings")
+
     np.save("settings/periods", periods)
     np.save("settings/maxH", mh)
         

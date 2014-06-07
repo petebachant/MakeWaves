@@ -12,6 +12,7 @@ from PyQt4 import QtGui
 from mainwindow import *
 import PyQt4.Qwt5 as Qwt
 import sys
+import os
 import wavemakerlimits as wml
 import numpy as np
 import daqmx
@@ -60,6 +61,10 @@ paddle_height = 1.0
 water_depth = 2.44
 minperiod = 0.5
 maxperiod = 5.0
+
+# See if limits data exist and generate is need be
+if not os.path.isfile("settings.periods.npy") or not os.path.isfile("settings.periods.npy"):
+    wml.findlimits()
 
 periods = np.round(np.load("settings/periods.npy"), decimals=4)
 maxH = np.load("settings/maxH.npy")
