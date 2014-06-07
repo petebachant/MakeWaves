@@ -2,6 +2,11 @@ MakeWaves
 =========
 MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. The app is still in development.
 
+Installation/running
+--------------------
+`makewaves.py` inside the `makewaves` directory can be run directly. Alternatively,
+the package can be installed by executing `python setup.py install`. 
+
 Contributing
 ------------
 
