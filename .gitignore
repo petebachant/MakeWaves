@@ -1,1 +1,5 @@
-# Ignore compiled python files*.pycbuild/__pycache__/###
+
+*.pyc
+*.swp
+build/
+__pycache__/
