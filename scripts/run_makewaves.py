@@ -1,0 +1,3 @@
+import makewaves
+
+makewaves.main()
