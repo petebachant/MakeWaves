@@ -102,9 +102,10 @@ def findlimits(plot=False, save=True):
     
     for n in range(len(periods)):
         progress = np.round(n/len(periods)*100, decimals=2)
-        sys.stdout.write("\rComputing wavemaker limits... \t" + str(progress)+"%")
+        sys.stdout.write("\rComputing wavemaker limits... " + str(progress)+"%")
         sys.stdout.flush()
         mh[n] = calc_safe_height(50, periods[n])
+    print("")
     
     if plot:
         import matplotlib.pyplot as plt
