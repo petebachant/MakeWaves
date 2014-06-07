@@ -11,6 +11,14 @@ safe wave height.
 from __future__ import division, print_function
 import numpy as np
 import os
+import sys
+
+_thisdir = sys.prefix + "/Lib/site-packages/makewaves"
+
+if not os.path.isdir(_thisdir):
+    _thisdir = ""
+else:
+    _thisdir += "/"
 
 max_halfstroke = 0.16 # Was 0.16
 flap_height = 3.3147
@@ -88,29 +96,30 @@ def calc_safe_height(H, T):
         return H
     
 
-def findlimits(plotchoice=False):
+def findlimits(plot=False, save=True):
     periods = np.arange(0.5, 5.01, 0.001)
     mh = np.zeros(len(periods))
     
     for n in range(len(periods)):
-        progress = n/len(periods)*100
-        print("Progress:", str(progress)+"%")
+        progress = np.round(n/len(periods)*100, decimals=2)
+        sys.stdout.write("\rComputing wavemaker limits... \t" + str(progress)+"%")
+        sys.stdout.flush()
         mh[n] = calc_safe_height(50, periods[n])
     
-    if plotchoice:
+    if plot:
         import matplotlib.pyplot as plt
         plt.close('all')
-        
         plt.plot(periods, mh)
+        plt.show()
         
-    if not os.path.isdir("settings"):
-        os.mkdir("settings")
-
-    np.save("settings/periods", periods)
-    np.save("settings/maxH", mh)
+    if save:
+        if not os.path.isdir(_thisdir + "settings"):
+            os.mkdir(_thisdir + "settings")    
+        np.save(_thisdir + "settings/periods", periods)
+        np.save(_thisdir + "settings/maxH", mh)
         
     return periods, mh
 
     
 if __name__ == "__main__":
-    findlimits(plotchoice=True)
+    findlimits(plot=False, save=False)

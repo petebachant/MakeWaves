@@ -71,6 +71,7 @@ maxperiod = 5.0
 # See if limits data exist and generate is need be
 if not os.path.isfile(_thisdir + "settings/periods.npy") or \
     not os.path.isfile(_thisdir + "settings/maxH.npy"):
+    print("No wavemaker limit settings found")
     wml.findlimits()
 
 periods = np.round(np.load(_thisdir + "settings/periods.npy"), decimals=4)
