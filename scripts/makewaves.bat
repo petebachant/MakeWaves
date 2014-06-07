@@ -1,1 +1,1 @@
-python "import makewaves \n makewaves.main()" 
+@"python.exe" "C:\Python27\Scripts\makewaves-script.py" %*
