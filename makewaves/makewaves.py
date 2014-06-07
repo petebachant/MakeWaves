@@ -13,10 +13,12 @@ from mainwindow import *
 import PyQt4.Qwt5 as Qwt
 import sys
 import os
+import platform
 import wavemakerlimits as wml
 import numpy as np
 import daqmx
 import time
+import json
 from wavetsgen import Wave, ramp_ts
 
 _thisdir = sys.prefix + "/Lib/site-packages/makewaves"
@@ -85,7 +87,7 @@ maxperiod_rand = 3.5
 cutoff_freq = 2.0
 max_H_L_rand = 0.07
 max_H_d_rand = 0.50
-                                      
+    
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -93,6 +95,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.wavegen = None
+        
+        # Load settings is they exist
+        self.load_settings()
         
         # Add a label to the status bar
         self.slabel = QLabel()
@@ -131,6 +136,20 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.ui.dock_time_series,
                               self.ui.dock_spectrum)                              
         self.on_rw_changed()
+        
+    def load_settings(self):
+        """Loads settings"""
+        self.pcid = platform.node()
+        try:
+            with open(_thisdir + "settings/app.json", "r") as fn:
+                self.settings = json.load(fn)
+        except IOError:
+            self.settings = {}
+        if "Last PC name" in self.settings:
+            if self.settings["Last PC name"] == self.pcid:
+                if "Last window location" in self.settings:
+                    self.move(QtCore.QPoint(self.settings["Last window location"][0],
+                                            self.settings["Last window location"][1]))
         
     def setup_spinboxes(self, nboxes):  
         """Add double spin boxes to the random waves table widget"""
@@ -374,6 +393,11 @@ class MainWindow(QtGui.QMainWindow):
                     progress += int(60*0.1/self.wavegen.period)
                     pbar.setValue(progress)
                 dialog.close()
+        self.settings["Last window location"] = [self.pos().x(), 
+                                                 self.pos().y()]
+        self.settings["Last PC name"] = self.pcid
+        with open(_thisdir + "settings/app.json", "w") as fn:
+            json.dump(self.settings, fn, indent=4)
      
            
 class WaveGen(QThread):
