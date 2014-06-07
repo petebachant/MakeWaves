@@ -1,1 +1,1 @@
-@"python.exe" "C:\Python27\Scripts\makewaves-script.py" %*
+@start "" "pythonw.exe" "C:\Python27\Scripts\makewaves-script.pyw" %*

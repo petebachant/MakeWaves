@@ -13,7 +13,7 @@ setup(
     author='Pete Bachant',
     author_email='petebachant@gmail.com',
     packages=['makewaves'],
-    scripts=['scripts/makewaves-script.py', 'scripts/makewaves.bat'],
+    scripts=['scripts/makewaves-script.pyw', 'scripts/makewaves.bat'],
     data_files=[('Lib/site-packages/makewaves/icons', icons)],
     url='https://github.com/petebachant/MakeWaves.git',
     license='LICENSE',
