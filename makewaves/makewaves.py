@@ -95,6 +95,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.wavegen = None
+        self.calcthread = None
         
         # Load settings is they exist
         self.load_settings()
@@ -311,6 +312,24 @@ class MainWindow(QtGui.QMainWindow):
             if "Scale Ratio" in parameter:
                 self.spinboxes_rw[row].setDisabled(True)
             row += 1
+        for sb in self.spinboxes_rw:
+            sb.valueChanged.connect(self.on_rw_param_changed)
+            
+    def on_rw_param_changed(self):
+        """If a random wave parameter is changed, start a thread to check
+            if the parameters don't over-extend the piston."""
+        rwtype = self.ui.combobox_randwavetype.currentText()
+        wave = Wave(rwtype)
+        if rwtype == "Bretschneider" or rwtype == "JONSWAP":
+            wave.sig_height = self.spinboxes_rw[0].value()
+            wave.sig_period = self.spinboxes_rw[1].value()
+            wave.scale_ratio = self.spinboxes_rw[2].value()
+        elif rwtype == "Pierson-Moskowitz":
+            wave.windspeed = self.spinboxes_rw[0].value()
+            wave.scale_ratio = self.spinboxes_rw[1].value()
+        if not self.calcthread or not self.calcthread.isRunning():
+            self.calcthread = CalcThread(self, wave)
+            self.calcthread.start()
 
     def on_start(self):
         if self.ui.action_start.isChecked() == True:
@@ -512,6 +531,18 @@ class WaveGen(QThread):
         self.stopgen = WaveStop(self)
         self.stopgen.start()
         
+class CalcThread(QThread):
+    def __init__(self, main_window, wave):
+        QtCore.QThread.__init__(self)
+        self.mw = main_window
+        self.wave = wave
+        
+    def run(self):
+        self.wave.gen_ts_stroke()
+        if self.wave.ts_stroke.max() > wml.max_halfstroke:
+            self.mw.ui.action_start.setDisabled(True)
+        else:
+            self.mw.ui.action_start.setEnabled(True)
 
 class WaveStop(QThread):
     def __init__(self, wavegen):

@@ -39,13 +39,11 @@ import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
 from wavemakerlimits import dispsolver
 
-
 # Constants
 stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
 paddle_height = 3.3147
 water_depth = 2.44
 g = 9.81
-
 
 def psd(t, data, window=None):
     """Computes one-sided power spectral density.
@@ -115,6 +113,14 @@ def elev2stroke2(ts_elev, sr):
 def stroke2volts(stroke):
     return stroke*stroke_cal
     
+class WaveTimeSeries(object):
+    pass
+    
+class RegularWaveTimeSeries(WaveTimeSeries):
+    pass
+    
+class RandomWaveTimeSeries(WaveTimeSeries):
+    pass
 
 class Wave(object):
     """Object that mathematically represents a wave."""
