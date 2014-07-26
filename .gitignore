@@ -1,5 +1,5 @@
 
-makewaves/settings/
+makewaves/settings/app.json
 *.pyc
 *.swp
 build/
