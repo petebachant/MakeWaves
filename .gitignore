@@ -1,4 +1,5 @@
 
+makewaves/settings/
 *.pyc
 *.swp
 build/
