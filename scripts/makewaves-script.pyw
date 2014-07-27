@@ -1,5 +1,5 @@
 #!pythonw.exe
 
 if __name__ == "__main__":
-    import makewaves
+    from makewaves import makewaves
     makewaves.main()
