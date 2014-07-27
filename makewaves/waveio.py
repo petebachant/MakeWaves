@@ -14,6 +14,7 @@ except ImportError:
     from .wavetsgen import Wave, ramp_ts
 import time
 import daqmx
+import numpy as np
 
 class WaveGen(QThread):
     def __init__(self, wavetype):

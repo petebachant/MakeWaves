@@ -88,7 +88,7 @@ def spec2stroke(omega, spec, sr):
     A = np.sqrt(2*spec*(omega[1] - omega[0]))
     t = np.arange(0, len(spec))/sr
     ts_stroke = np.zeros(len(t))
-    for n in xrange(len(omega)):
+    for n in range(len(omega)):
         ts_elev = (A[n]*np.sin(omega[n]*t + phase[n]))
         ts_stroke += elev2stroke(ts_elev, A[n]*2, 2*np.pi/omega[n])
     return ts_stroke
@@ -101,7 +101,7 @@ def elev2stroke2(ts_elev, sr):
     N = len(ts_elev)
     HS = np.ones(N)*1e12
     # Only compute HS for frequencies corresponding to T = 0.25--8 Hz
-    for n in xrange(N//1024, N//32):
+    for n in range(N//1024, N//32):
         f = n*sr/N*(1 - 2/N) + 1/(sr*N)
         omega = 2*pi*f
         kh = water_depth*dispsolver(omega, water_depth, decimals=1)
