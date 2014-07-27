@@ -35,9 +35,11 @@ Removed parameters:
 """
 from __future__ import division, print_function
 import numpy as np
-import matplotlib.pyplot as plt
 from numpy import pi, sinh, cosh
-from wavemakerlimits import dispsolver
+try:
+    from wavemakerlimits import dispsolver
+except ImportError:
+    from .wavemakerlimits import dispsolver
 
 # Constants
 stroke_cal = 15.7130 # V/m stroke, used to be 7.8564, might need to be 18?
@@ -228,6 +230,7 @@ def ramp_ts(ts, direction):
 
     
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
 #    wave = Wave("JONSWAP")
 #    wave = Wave("Bretschneider")
     wave = Wave("Pierson-Moskowitz")
