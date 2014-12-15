@@ -5,3 +5,5 @@ makewaves/settings/app.json
 build/
 __pycache__/
 .ipynb_checkpoints/
+*.lnk
+
