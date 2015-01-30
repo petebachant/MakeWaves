@@ -10,7 +10,7 @@ import sys
 python_dir = os.path.split(sys.executable)[0]
 shortcut_path = "MakeWaves.lnk"
 pythonw_path = os.path.join(python_dir, "pythonw.exe")
-makewaves_path = os.path.join(python_dir, "Scripts", "makewaves-script.pyw")
+makewaves_path = os.path.join(python_dir, "Scripts", "makewaves-script.py")
 wdir = r"C:\temp"
 icon = os.path.join(python_dir,
                     "Lib",

@@ -1,1 +1,2 @@
-@start "" "pythonw.exe" "C:\Python27\Scripts\makewaves-script.pyw" %*
+@echo off
+start pythonw "%~f0\..\makewaves-script.py" %*
