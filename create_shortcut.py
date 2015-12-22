@@ -1,8 +1,7 @@
-"""
-This script creates Windows shortcuts.
+#!/usr/bin/env python
+"""This script creates Windows shortcuts."""
 
-"""
-
+from __future__ import division, print_function
 import os
 from win32com.client import Dispatch
 import sys
@@ -18,8 +17,8 @@ icon = os.path.join(python_dir,
                     "makewaves",
                     "icons",
                     "makewaves_icon.ico")
-target_path = '{} {}'.format(pythonw_path, makewaves_path)
-print target_path
+target_path = "{} {}".format(pythonw_path, makewaves_path)
+print(target_path)
 
 shell = Dispatch("WScript.shell")
 shortcut = shell.CreateShortCut(shortcut_path)
@@ -28,4 +27,3 @@ shortcut.Arguments = makewaves_path
 shortcut.WorkingDirectory = wdir
 shortcut.IconLocation = icon
 shortcut.save()
-
