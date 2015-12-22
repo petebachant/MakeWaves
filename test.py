@@ -1,7 +1,5 @@
-"""
-This script allows testing of MakeWaves without installing.
-
-"""
+#!/usr/bin/env python
+"""This script allows testing of MakeWaves without installing."""
 
 import makewaves
 
