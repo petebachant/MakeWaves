@@ -2,7 +2,7 @@
 
 echo Building GUI
 
-python -m PyQt4.uic.pyuic.py makewaves/mainwindow.ui -o tow/mainwindow.py
+python -m PyQt4.uic.pyuic.py makewaves/mainwindow.ui -o makewaves/mainwindow.py
 
 echo Building resource file
 
