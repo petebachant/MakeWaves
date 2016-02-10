@@ -1,7 +1,10 @@
 MakeWaves
 =========
 
-MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. The app is still in development. See below for how to help.
+MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. The app is still in development. 
+See below for how to help.
+
+![Main window](http://i.imgur.com/9If9o2u.png)
 
 
 Installation/running
