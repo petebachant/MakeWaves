@@ -16,12 +16,7 @@ import time
 import json
 from .waveio import WaveGen
 
-_thisdir = sys.prefix + "/Lib/site-packages/makewaves"
-
-if not os.path.isdir(_thisdir):
-    _thisdir = ""
-else:
-    _thisdir += "/"
+_thisdir = os.path.dirname(os.path.abspath(__file__))
 
 # Spectral parameters for random waves
 bret_params = [("Significant Wave Height", 0.1),
