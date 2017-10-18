@@ -23,7 +23,7 @@ See the [wiki](https://github.com/petebachant/MakeWaves/wiki#wiki-contributing).
 Dependencies
 ------------
 
-  * [Python (x,y)](<http://ftp.ntua.gr/pub/devel/pythonxy/Python%28x,y%29-2.7.10.0.exe>)
+  * NI DAQmx driver (See National Instruments website for download)
+  * [Python (x,y)](http://ftp.ntua.gr/pub/devel/pythonxy/Python%28x,y%29-2.7.10.0.exe)
   * [PyDAQmx](http://github.com/clade/PyDAQmx.git) (`pip install pydaqmx`)
   * [daqmx](http://github.com/petebachant/daqmx.git) (`pip install https://github.com/petebachant/daqmx/archive/master.zip`)
-  * NI DAQmx driver (See National Instruments website for download)
