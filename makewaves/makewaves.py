@@ -2,11 +2,11 @@
 """MakeWaves main application."""
 
 from __future__ import division, print_function
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import QtGui
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5 import QtGui
 from .mainwindow import *
-import PyQt4.Qwt5 as Qwt
+import PyQt5.Qwt5 as Qwt
 import sys
 import os
 import platform
