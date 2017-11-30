@@ -67,8 +67,8 @@ if not os.path.isfile(periods_fpath) or not os.path.isfile(maxh_fpath):
     print("No wavemaker limit settings found")
     wml.findlimits()
 
-periods = np.round(np.load(_thisdir + "settings/periods.npy"), decimals=4)
-maxH = np.load(_thisdir + "settings/maxH.npy")
+periods = np.round(np.load(periods_fpath), decimals=4)
+maxH = np.load(maxh_fpath)
 minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
 maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
 
