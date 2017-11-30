@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module replicates the logic of the Regular Waves VI to calculate a
 safe wave height.
 """
@@ -9,6 +8,7 @@ import os
 import sys
 
 _thisdir = os.path.dirname(os.path.abspath(__file__))
+settings_dir = os.path.join(_thisdir, "settings")
 
 max_halfstroke = 0.16 # Was 0.16
 flap_height = 3.3147
@@ -88,10 +88,10 @@ def findlimits(plot=False, save=True):
         import matplotlib.pyplot as plt
         plt.plot(periods, mh)
     if save:
-        if not os.path.isdir(_thisdir + "settings"):
-            os.mkdir(_thisdir + "settings")
-        np.save(_thisdir + "settings/periods", periods)
-        np.save(_thisdir + "settings/maxH", mh)
+        if not os.path.isdir(settings_dir):
+            os.mkdir(settings_dir)
+        np.save(os.path.join(settings_dir, "periods"), periods)
+        np.save(os.path.join(settings_dir, "maxH"), mh)
     return periods, mh
 
 
