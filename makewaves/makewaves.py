@@ -382,12 +382,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tabwidget.setEnabled(True)
 
     def on_about(self):
-        about_text = QString("<b>MakeWaves 0.0.1</b><br>")
-        about_text.append("A wavemaking app for the UNH tow/wave tank<br><br>")
-        about_text.append("Created by Pete Bachant (petebachant@gmail.com)<br>")
-        about_text.append(
-            "with contributions by Toby Dewhurst and Matt Rowell."
-        )
+        about_text = "<b>MakeWaves 0.0.1</b><br>"
+        about_text += "A wavemaking app for the UNH tow/wave tank<br><br>"
+        about_text += "Created by Pete Bachant (petebachant@gmail.com)<br>"
+        about_text + "with contributions by Toby Dewhurst and Matt Rowell."
         QMessageBox.about(self, "About MakeWaves", about_text)
 
     def on_wiki(self):
