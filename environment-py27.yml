@@ -1,4 +1,4 @@
-name: makewaves
+name: makewaves-py27
 channels:
 - defaults
 dependencies:
