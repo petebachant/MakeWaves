@@ -326,4 +326,4 @@ class Ui_MainWindow(object):
         self.actionRecording.setText(_translate("MainWindow", "Recording...", None))
 
 from PyQt4 import Qwt5
-import resources_rc
+from . import resources_rc
