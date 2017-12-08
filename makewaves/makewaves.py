@@ -14,6 +14,7 @@ import numpy as np
 import time
 import json
 from .waveio import WaveGen
+from .wavetsgen import Wave
 
 _thisdir = os.path.dirname(os.path.abspath(__file__))
 settings_dir = os.path.join(_thisdir, "settings")
