@@ -1,3 +1,3 @@
 
-from . import makewaves
+from __future__ import division, print_function, absolute_import
 from .makewaves import *

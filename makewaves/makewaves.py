@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """MakeWaves main application."""
 
-from __future__ import division, print_function
+from __future__ import division, print_function, absolute_import
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtGui
@@ -15,8 +14,10 @@ import numpy as np
 import time
 import json
 from .waveio import WaveGen
+from .wavetsgen import Wave
 
 _thisdir = os.path.dirname(os.path.abspath(__file__))
+settings_dir = os.path.join(_thisdir, "settings")
 
 # Spectral parameters for random waves
 bret_params = [("Significant Wave Height", 0.1),
@@ -53,7 +54,6 @@ rw_params = {"Bretschneider" : bret_params,
              "JONSWAP" : jonswap_params,
              "Pierson-Moskowitz" : pm_params}
 
-
 # Some universal constants
 paddle_height = 1.0
 water_depth = 2.44
@@ -61,13 +61,14 @@ minperiod = 0.5
 maxperiod = 5.0
 
 # See if limits data exist and generate is need be
-if not os.path.isfile(_thisdir + "settings/periods.npy") or \
-    not os.path.isfile(_thisdir + "settings/maxH.npy"):
+periods_fpath = os.path.join(settings_dir, "periods.npy")
+maxh_fpath = os.path.join(settings_dir, "maxH.npy")
+if not os.path.isfile(periods_fpath) or not os.path.isfile(maxh_fpath):
     print("No wavemaker limit settings found")
     wml.findlimits()
 
-periods = np.round(np.load(_thisdir + "settings/periods.npy"), decimals=4)
-maxH = np.load(_thisdir + "settings/maxH.npy")
+periods = np.round(np.load(periods_fpath), decimals=4)
+maxH = np.load(maxh_fpath)
 minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
 maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
 
@@ -132,15 +133,17 @@ class MainWindow(QtGui.QMainWindow):
         """Loads settings"""
         self.pcid = platform.node()
         try:
-            with open(_thisdir + "settings/app.json", "r") as fn:
+            with open(os.path.join(settings_dir, "app.json"), "r") as fn:
                 self.settings = json.load(fn)
         except IOError:
             self.settings = {}
         if "Last PC name" in self.settings:
             if self.settings["Last PC name"] == self.pcid:
                 if "Last window location" in self.settings:
-                    self.move(QtCore.QPoint(self.settings["Last window location"][0],
-                                            self.settings["Last window location"][1]))
+                    self.move(
+                        QtCore.QPoint(self.settings["Last window location"][0],
+                                      self.settings["Last window location"][1])
+                        )
 
     def setup_spinboxes(self, nboxes):
         """Add double spin boxes to the random waves table widget"""
@@ -191,15 +194,23 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.spinbox_wave_period.valueChanged.connect(self.on_wp_changed)
         self.ui.spinbox_wavelength.valueChanged.connect(self.on_wl_changed)
         self.ui.action_about.triggered.connect(self.on_about)
-        self.ui.combobox_randwavetype.currentIndexChanged.connect(self.on_rw_changed)
+        self.ui.combobox_randwavetype.currentIndexChanged.connect(
+            self.on_rw_changed
+        )
         self.ui.action_start.triggered.connect(self.on_start)
         self.ui.combobox_regparams.currentIndexChanged.connect(self.on_regpars)
         self.ui.action_wiki.triggered.connect(self.on_wiki)
         self.ui.slider_height.sliderMoved.connect(self.on_slider_height)
         self.ui.slider_horiz.sliderMoved.connect(self.on_slider_horiz)
-        self.ui.action_view_ts.triggered.connect(self.ui.dock_time_series.setVisible)
-        self.ui.dock_spectrum.visibilityChanged.connect(self.ui.action_view_spec.setChecked)
-        self.ui.action_view_spec.triggered.connect(self.ui.dock_spectrum.setVisible)
+        self.ui.action_view_ts.triggered.connect(
+            self.ui.dock_time_series.setVisible
+        )
+        self.ui.dock_spectrum.visibilityChanged.connect(
+            self.ui.action_view_spec.setChecked
+        )
+        self.ui.action_view_spec.triggered.connect(
+            self.ui.dock_spectrum.setVisible
+        )
         self.ui.dock_time_series.visibilityChanged.connect(self.on_dock_ts)
 
     def on_dock_ts(self):
@@ -372,14 +383,14 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tabwidget.setEnabled(True)
 
     def on_about(self):
-        about_text = QString("<b>MakeWaves 0.0.1</b><br>")
-        about_text.append("A wavemaking app for the UNH tow/wave tank<br><br>")
-        about_text.append("Created by Pete Bachant (petebachant@gmail.com)<br>")
-        about_text.append("with contributions by Toby Dewhurst and Matt Rowell.")
+        about_text = "<b>MakeWaves 0.0.1</b><br>"
+        about_text += "A wavemaking app for the UNH tow/wave tank<br><br>"
+        about_text += "Created by Pete Bachant (petebachant@gmail.com)<br>"
+        about_text + "with contributions by Toby Dewhurst and Matt Rowell."
         QMessageBox.about(self, "About MakeWaves", about_text)
 
     def on_wiki(self):
-        url = QUrl("http://marine.unh.edu/oelab/wiki/doku.php?id=tow_tank:operation:wavemaker")
+        url = QUrl("https://github.com/petebachant/MakeWaves/wiki")
         QDesktopServices.openUrl(url)
 
     def closeEvent(self, event):
@@ -393,7 +404,11 @@ class MainWindow(QtGui.QMainWindow):
                 layout.addWidget(pbar, 0, 0)
                 dialog.setLayout(layout)
                 dialog.setWindowTitle("Ramping down...")
-                dialog.setWindowIcon(QtGui.QIcon(_thisdir + "icons/makewaves_icon.svg"))
+                dialog.setWindowIcon(
+                    QtGui.QIcon(
+                        os.path.join(_thisdir, "icons", "makewaves_icon.svg")
+                    )
+                )
                 dialog.show()
                 progress = 0
                 while not self.wavegen.cleared:
@@ -405,7 +420,7 @@ class MainWindow(QtGui.QMainWindow):
         self.settings["Last window location"] = [self.pos().x(),
                                                  self.pos().y()]
         self.settings["Last PC name"] = self.pcid
-        with open(_thisdir + "settings/app.json", "w") as fn:
+        with open(os.path.join(settings_dir, "app.json"), "w") as fn:
             json.dump(self.settings, fn, indent=4)
 
 
@@ -422,16 +437,17 @@ class CalcThread(QThread):
         else:
             self.mw.ui.action_start.setEnabled(True)
 
+
 # Boilerplate code to run a Qt application
 def main():
-
     app = QtGui.QApplication(sys.argv)
-
     w = MainWindow()
-    w.setWindowIcon(QtGui.QIcon(_thisdir + "icons/makewaves_icon.svg"))
+    w.setWindowIcon(
+        QtGui.QIcon(os.path.join(_thisdir, "icons", "makewaves_icon.svg"))
+    )
     w.show()
-
     sys.exit(app.exec_())
+
 
 # Boilerplate code to run the Python application
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ Removed parameters:
             self.sigma_A = 0.45
             self.sigma_B = 0.15
             self.P = 4.85
-            
+
         elif self.wavetype == "NH Typical":
             self.sig_height = 1.21
             self.sig_period = 10.0
@@ -64,6 +64,7 @@ def psd(t, data, window=None):
 
 def spec2ts(spec, sr):
     """Create time series with random (normal) phases from power spectrum."""
+    sr = int(sr)
     phase = np.random.normal(0, pi, len(spec))
     ts_elev = np.fft.irfft(np.sqrt(spec*len(spec)*sr)*np.exp(1j*phase))
     # Taper down last second of ts so it can repeat
@@ -81,7 +82,7 @@ def elev2stroke(ts_elev, waveheight, waveperiod):
     factor = paddle_height/water_depth
     stroke = 4*(sinh(kh)/kh)*(kh*sinh(kh)-cosh(kh)+1)/(sinh(2*kh)+2*kh)
     return ts_elev*factor/stroke
-    
+
 def spec2stroke(omega, spec, sr):
     """Converts a spectrum into piston stroke"""
     phase = np.random.normal(0, pi, len(spec))
@@ -95,7 +96,7 @@ def spec2stroke(omega, spec, sr):
 
 def elev2stroke2(ts_elev, sr):
     """Converts a random elevation time series to piston stroke time series
-    HS=(4*sinh(x)/x)*((x*sinh(x)-cosh(x)+1)/(sinh(2*x)+2*x));    
+    HS=(4*sinh(x)/x)*((x*sinh(x)-cosh(x)+1)/(sinh(2*x)+2*x));
     """
     # Find kh vector for omegas
     N = len(ts_elev)
@@ -111,16 +112,16 @@ def elev2stroke2(ts_elev, sr):
     A = np.absolute(fft_ts)/HS*paddle_height/water_depth
     ts_stroke = np.fft.ifft(A*np.exp(1j*np.angle(fft_ts)))
     return ts_stroke.real
-    
+
 def stroke2volts(stroke):
     return stroke*stroke_cal
-    
+
 class WaveTimeSeries(object):
     pass
-    
+
 class RegularWaveTimeSeries(WaveTimeSeries):
     pass
-    
+
 class RandomWaveTimeSeries(WaveTimeSeries):
     pass
 
@@ -162,7 +163,7 @@ class Wave(object):
             f_end = self.sr/2
             self.f = np.linspace(f_start, f_end, nfreq)
             self.omega = 2*pi*self.f
-    
+
             if self.wavetype=="Bretschneider":
                 f = self.f
                 f0 = 1/self.sig_period
@@ -171,7 +172,7 @@ class Wave(object):
                         *np.exp(-5/4*(f/f0)**-4)
                 self.height = self.sig_height
                 self.period = self.sig_period
-                
+
             elif self.wavetype=="JONSWAP":
                 """Compute a JONSWAP spectrum"""
                 i_left = np.where(self.f <= 1.0/self.sig_period)[0]
@@ -187,7 +188,7 @@ class Wave(object):
                 self.f**(-5)*np.exp(B)*self.gamma**A
                 self.period = self.sig_period
                 self.height = self.sig_height #Don't know about this...
-            
+
             elif self.wavetype == "Pierson-Moskowitz":
                 """Needs implementation of scale ratio, or not."""
                 U = self.windspeed
@@ -197,27 +198,27 @@ class Wave(object):
                 self.spec = alpha*g**2/((2*pi)**4*f**5)*np.exp(-B/f**4)
                 self.height = 0.21*self.windspeed**2/g
                 self.period = 2*pi*self.windspeed/(0.877*g)
-            # Final step: compute time series    
+            # Final step: compute time series
             self.ts_elev = spec2ts(self.spec, self.sr)
-            
+
     def gen_ts_stroke(self):
         """Needs algorithm for random waves"""
         self.gen_ts()
         if self.wavetype == "Regular":
-            self.ts_stroke = elev2stroke(self.ts_elev, self.height, 
+            self.ts_stroke = elev2stroke(self.ts_elev, self.height,
                                          self.period)
         else:
             self.ts_stroke = elev2stroke2(self.ts_elev, self.sr)
-        
+
     def gen_ts_volts(self):
         self.gen_ts_stroke()
         self.ts_volts = stroke2volts(self.ts_stroke)
-        
+
     def comp_spec(self):
         t = np.arange(len(self.ts_elev))/self.sr
         f, spec = psd(t, self.ts_elev, window=None)
         return f, spec
-        
+
 
 def ramp_ts(ts, direction):
     rampfull = np.ones(len(ts))
@@ -228,7 +229,7 @@ def ramp_ts(ts, direction):
         rampfull[-len(ramp)/2:] = ramp[len(ramp)/2:]
     return ts*rampfull
 
-    
+
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 #    wave = Wave("JONSWAP")
@@ -240,11 +241,11 @@ if __name__ == "__main__":
     ts = wave.ts_stroke
     t = np.arange(len(ts))/wave.sr
     print(len(ts))
-    
+
     f, s = wave.comp_spec()
     f2, s2 = wave.f, wave.spec
 #    f, s = psd(t, ts)
-        
+
     plt.close("all")
     plt.plot(t, ts)
 
@@ -254,4 +255,3 @@ if __name__ == "__main__":
     plt.plot(f2, s2)
     plt.xlim((0,5))
     plt.show()
-    
