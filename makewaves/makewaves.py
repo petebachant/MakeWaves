@@ -387,7 +387,7 @@ class MainWindow(QtGui.QMainWindow):
         about_text = "<b>MakeWaves v{}</b><br>".format(__version__)
         about_text += "A wavemaking app for the UNH tow/wave tank<br><br>"
         about_text += "Created by Pete Bachant (petebachant@gmail.com)<br>"
-        about_text + "with contributions by Toby Dewhurst and Matt Rowell."
+        about_text += "with contributions by Toby Dewhurst and Matt Rowell."
         QMessageBox.about(self, "About MakeWaves", about_text)
 
     def on_wiki(self):
