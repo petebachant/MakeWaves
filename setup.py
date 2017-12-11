@@ -3,13 +3,14 @@
 
 from distutils.core import setup
 import os
+import makewaves
 
 icons = os.listdir("makewaves/icons")
 icons = ["makewaves/icons/" + i for i in icons]
 
 setup(
     name='MakeWaves',
-    version='0.0.1',
+    version=makewaves.__version__,
     author='Pete Bachant',
     author_email='petebachant@gmail.com',
     packages=['makewaves'],

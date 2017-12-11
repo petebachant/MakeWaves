@@ -15,6 +15,7 @@ import time
 import json
 from .waveio import WaveGen
 from .wavetsgen import Wave
+from makewaves import __version__
 
 _thisdir = os.path.dirname(os.path.abspath(__file__))
 settings_dir = os.path.join(_thisdir, "settings")
@@ -383,7 +384,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.tabwidget.setEnabled(True)
 
     def on_about(self):
-        about_text = "<b>MakeWaves 0.0.1</b><br>"
+        about_text = "<b>MakeWaves v{}</b><br>".format(__version__)
         about_text += "A wavemaking app for the UNH tow/wave tank<br><br>"
         about_text += "Created by Pete Bachant (petebachant@gmail.com)<br>"
         about_text + "with contributions by Toby Dewhurst and Matt Rowell."
