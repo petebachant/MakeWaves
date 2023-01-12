@@ -1,11 +1,14 @@
 """MakeWaves main application."""
 
 from __future__ import division, print_function, absolute_import
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import QtGui
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore, uic, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QDoubleSpinBox, QTableWidgetItem
+from PyQt5.QtCore import *
 from .mainwindow import *
-import PyQt4.Qwt5 as Qwt
+import qwt as Qwt
 import sys
 import os
 import platform
@@ -81,9 +84,9 @@ max_H_L_rand = 0.07
 max_H_d_rand = 0.50
 
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self)
+        QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.wavegen = None
@@ -109,13 +112,13 @@ class MainWindow(QtGui.QMainWindow):
 
         # Initialize slider values
         hmax = maxH[np.where(periods==np.round(1, decimals=2))[0]]
-        self.ui.slider_height.setRange(0.0, hmax, 0.001, 10)
-        self.ui.spinbox_wave_height.setMaximum(hmax)
+        self.ui.slider_height.setRange(0.0, float(hmax))
+        self.ui.spinbox_wave_height.setMaximum(float(hmax))
         self.ui.slider_height.setValue(self.ui.spinbox_wave_height.value())
-        self.ui.slider_height.setScaleMaxMajor(12)
+        # self.ui.slider_height.setScaleMaxMajor(12)
 
-        self.ui.slider_horiz.setRange(0.5, 5, 0.001, 10)
-        self.ui.slider_horiz.setScaleMaxMajor(12)
+        self.ui.slider_horiz.setRange(0.5, 5)
+        # self.ui.slider_horiz.setScaleMaxMajor(12)
         self.ui.slider_horiz.setValue(self.ui.spinbox_wave_period.value())
 
         # Initialize wavelength value
@@ -441,7 +444,7 @@ class CalcThread(QThread):
 
 # Boilerplate code to run a Qt application
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     w = MainWindow()
     w.setWindowIcon(
         QtGui.QIcon(os.path.join(_thisdir, "icons", "makewaves_icon.svg"))

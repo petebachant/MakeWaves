@@ -1,8 +1,8 @@
 """I/O operations."""
 
 from __future__ import division, print_function
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 try:
     from wavetsgen import Wave, ramp_ts
 except ImportError:
