@@ -3,6 +3,7 @@
 from __future__ import division, print_function, absolute_import
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import (
@@ -464,15 +465,15 @@ class MainWindow(QMainWindow):
         if self.wavegen != None:
             if self.wavegen.isRunning() and not self.wavegen.cleared:
                 self.wavegen.stop()
-                dialog = QtGui.QDialog()
-                pbar = QtGui.QProgressBar()
+                dialog = QDialog()
+                pbar = QProgressBar()
                 pbar.setFixedWidth(300)
-                layout = QtGui.QGridLayout()
+                layout = QGridLayout()
                 layout.addWidget(pbar, 0, 0)
                 dialog.setLayout(layout)
                 dialog.setWindowTitle("Ramping down...")
                 dialog.setWindowIcon(
-                    QtGui.QIcon(
+                    QIcon(
                         os.path.join(_thisdir, "icons", "makewaves_icon.svg")
                     )
                 )
