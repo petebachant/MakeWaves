@@ -127,14 +127,8 @@ class MainWindow(QMainWindow):
 
         # Initialize slider values
         hmax = maxH[np.where(periods == np.round(1, decimals=2))[0]]
-        self.ui.slider_height.setRange(0.0, float(hmax))
         self.ui.spinbox_wave_height.setMaximum(float(hmax))
-        self.ui.slider_height.setValue(self.ui.spinbox_wave_height.value())
-        # self.ui.slider_height.setScaleMaxMajor(12)
-
-        self.ui.slider_horiz.setRange(0.5, 5)
-        # self.ui.slider_horiz.setScaleMaxMajor(12)
-        self.ui.slider_horiz.setValue(self.ui.spinbox_wave_period.value())
+        self.update_slider_height_value()
 
         # Initialize wavelength value
         wl = (
@@ -143,6 +137,7 @@ class MainWindow(QMainWindow):
             / wml.dispsolver(2 * np.pi / 1.0, water_depth, decimals=2)
         )
         self.ui.spinbox_wavelength.setValue(wl)
+        self.update_slider_horiz_value()
 
         # Initialize plot settings
         self.initialize_plots()
@@ -192,10 +187,9 @@ class MainWindow(QMainWindow):
         self.curve_ts = Qwt.QwtPlotCurve("")
         self.curve_ts.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
         self.pen = QPen(QColor("black"))
-        self.pen.setWidth(1.5)
+        self.pen.setWidth(2)
         self.curve_ts.setPen(self.pen)
         self.curve_ts.attach(self.plot_ts)
-
         # Create output spectrum plot
         self.plot_spec = self.ui.plot_spec
         self.plot_spec.setCanvasBackground(Qt.white)
@@ -209,7 +203,7 @@ class MainWindow(QMainWindow):
         self.curve_spec = Qwt.QwtPlotCurve("")
         self.curve_spec.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
         self.pen = QPen(QColor("black"))
-        self.pen.setWidth(1.5)
+        self.pen.setWidth(2)
         self.curve_spec.setPen(self.pen)
         self.curve_spec.attach(self.plot_spec)
 
@@ -261,21 +255,21 @@ class MainWindow(QMainWindow):
 
     def on_wh_changed(self):
         # Need some way to let user continue typing before changing slider
-        self.ui.slider_height.setValue(self.ui.spinbox_wave_height.value())
+        self.update_slider_height_value()
 
     def on_wp_changed(self):
         wp = self.ui.spinbox_wave_period.value()
         if self.parameters == "HT":
             hmax = maxH[np.where(periods == np.round(wp, decimals=2))[0][0]]
             self.ui.spinbox_wave_height.setMaximum(hmax)
-            self.ui.slider_height.setRange(0, hmax, 0.001, 10)
+            self.update_slider_height_value()
             wl = (
                 2
                 * np.pi
                 / wml.dispsolver(2 * np.pi / wp, water_depth, decimals=1)
             )
             self.ui.spinbox_wavelength.setValue(wl)
-            self.ui.slider_horiz.setValue(wp)
+            self.update_slider_horiz_value()
 
     def on_wl_changed(self):
         if self.parameters == "HL":
@@ -288,17 +282,47 @@ class MainWindow(QMainWindow):
             self.ui.spinbox_wave_period.setValue(wp)
             hmax = maxH[np.where(periods == np.round(wp, decimals=2))[0][0]]
             self.ui.spinbox_wave_height.setMaximum(hmax)
-            self.ui.slider_height.setRange(0, hmax, 0.001, 10)
-            self.ui.slider_horiz.setValue(wl)
+            self.update_slider_horiz_value()
 
     def on_slider_height(self):
-        self.ui.spinbox_wave_height.setValue(self.ui.slider_height.value())
+        frac = self.ui.slider_height.value() / self.ui.slider_height.maximum()
+        mi = self.ui.spinbox_wave_height.minimum()
+        mx = self.ui.spinbox_wave_height.maximum()
+        self.ui.spinbox_wave_height.setValue(mi + frac * (mx - mi))
 
     def on_slider_horiz(self):
+        frac = self.ui.slider_horiz.value() / self.ui.slider_horiz.maximum()
         if self.parameters == "HT":
-            self.ui.spinbox_wave_period.setValue(self.ui.slider_horiz.value())
+            sb = self.ui.spinbox_wave_period
         elif self.parameters == "HL":
-            self.ui.spinbox_wavelength.setValue(self.ui.slider_horiz.value())
+            sb = self.ui.spinbox_wavelength
+        mi = sb.minimum()
+        mx = sb.maximum()
+        sb.setValue(mi + frac * (mx - mi))
+
+    def update_slider_height_value(self):
+        """Update height slider according to a new max."""
+        h = self.ui.spinbox_wave_height.value()
+        hmin = self.ui.spinbox_wave_height.minimum()
+        hmax = self.ui.spinbox_wave_height.maximum()
+        frac = (h - hmin) / (hmax - hmin)
+        mi = self.ui.slider_height.minimum()
+        mx = self.ui.slider_height.maximum()
+        self.ui.slider_height.setValue(int(mi + h / hmax * (mx - mi)))
+
+    def update_slider_horiz_value(self):
+        """Update horizontal slider according to new max."""
+        if self.parameters == "HT":
+            sb = self.ui.spinbox_wave_period
+        elif self.parameters == "HL":
+            sb = self.ui.spinbox_wavelength
+        v = sb.value()
+        vmin = sb.minimum()
+        vmax = sb.maximum()
+        frac = (v - vmin) / (vmax - vmin)
+        mi = self.ui.slider_horiz.minimum()
+        mx = self.ui.slider_horiz.maximum()
+        self.ui.slider_height.setValue(int(mi + frac * (mx - mi)))
 
     def on_regpars(self):
         """Decides which two parameters to use for regular waves"""
@@ -312,12 +336,12 @@ class MainWindow(QMainWindow):
             )
             self.ui.spinbox_wave_period.setEnabled(True)
             self.ui.spinbox_wavelength.setDisabled(True)
-            self.ui.slider_horiz.setRange(0.5, 5.0, 0.001, 10)
-            self.ui.slider_horiz.setValue(wp)
             self.ui.spinbox_wavelength.setMinimum(0)
             self.ui.spinbox_wavelength.setMaximum(30)
             self.ui.spinbox_wave_period.setMaximum(5)
             self.ui.spinbox_wave_period.setMinimum(0.5)
+            self.update_slider_horiz_value()
+            self.update_slider_height_value()
 
         elif self.ui.combobox_regparams.currentIndex() == 1:
             self.parameters = "HL"
@@ -329,10 +353,9 @@ class MainWindow(QMainWindow):
             )
             self.ui.spinbox_wave_period.setEnabled(False)
             self.ui.spinbox_wavelength.setDisabled(False)
-            self.ui.slider_horiz.setRange(minL, maxL, 0.001, 10)
-            self.ui.slider_horiz.setValue(wl)
             self.ui.spinbox_wavelength.setMaximum(maxL)
             self.ui.spinbox_wavelength.setMinimum(minL)
+            self.update_slider_horiz_value()
 
     def on_rw_changed(self):
         self.rw_type = str(self.ui.combobox_randwavetype.currentText())
