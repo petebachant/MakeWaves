@@ -81,16 +81,6 @@ class WaveGen(QThread):
             self.buffsize,
         )
         daqmx.SetWriteRegenMode(self.AOtaskHandle, daqmx.Val_DoNotAllowRegen)
-
-        # Setup a callback function to run once the DAQmx driver finishes
-        def DoneCallback_py(taskHandle, status, callbackData_ptr):
-            print("Callback function called")
-            self.rampeddown = True
-            return 0
-
-        DoneCallback = daqmx.DoneEventCallbackPtr(DoneCallback_py)
-        daqmx.RegisterDoneEvent(self.AOtaskHandle, 0, DoneCallback, None)
-
         print("Writing the rampup time series")
         # Output the rampup time series
         daqmx.WriteAnalogF64(
@@ -148,7 +138,7 @@ class WaveGen(QThread):
         else:
             self.rampdown_ts = ramp_ts(self.dataw, "down")
         # Write rampdown time series
-        print("Writing rampdown time series")
+        print(f"Writing rampdown time series (len: {len(self.rampdown_ts)})")
         daqmx.WriteAnalogF64(
             self.AOtaskHandle,
             self.buffsize,
@@ -159,9 +149,16 @@ class WaveGen(QThread):
         )
         # Keep running, part of PyDAQmx callback syntax
         print("Waiting to ramp down")
-        while True:
-            pass
-        print("Done")
+        while (
+            writeSpaceAvail := daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
+        ) < self.buffsize:
+            print(writeSpaceAvail, "samples available in buffer")
+            time.sleep(0.5)
+        daqmx.StopTask(self.AOtaskHandle)
+        daqmx.WaitUntilTaskDone(self.AOtaskHandle, timeout=10.0)
+        print("Done ramping down")
+        daqmx.ClearTask(self.AOtaskHandle)
+        self.rampeddown = True
 
     def stop(self):
         self.stopgen = WaveStop(self)
