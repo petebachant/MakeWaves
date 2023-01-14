@@ -3,17 +3,21 @@
 from __future__ import division, print_function
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
 try:
     from wavetsgen import Wave, ramp_ts
 except ImportError:
     from .wavetsgen import Wave, ramp_ts
 import time
+
 try:
     import daqmx
 except ImportError:
     import warnings
+
     warnings.warn("Cannot import daqmx", ImportWarning)
 import numpy as np
+
 
 class WaveGen(QThread):
     def __init__(self, wavetype):
@@ -59,13 +63,24 @@ class WaveGen(QThread):
 
         self.AOtaskHandle = daqmx.TaskHandle()
         daqmx.CreateTask("", self.AOtaskHandle)
-        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "",
-                                  -10.0, 10.0, daqmx.Val_Volts, None)
-        daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr,
-                               daqmx.Val_Rising, daqmx.Val_ContSamps,
-                               self.buffsize)
-        daqmx.SetWriteRegenMode(self.AOtaskHandle,
-                                daqmx.Val_DoNotAllowRegen)
+        daqmx.CreateAOVoltageChan(
+            self.AOtaskHandle,
+            "Dev1/ao0",
+            "",
+            -10.0,
+            10.0,
+            daqmx.Val_Volts,
+            None,
+        )
+        daqmx.CfgSampClkTiming(
+            self.AOtaskHandle,
+            "",
+            self.sr,
+            daqmx.Val_Rising,
+            daqmx.Val_ContSamps,
+            self.buffsize,
+        )
+        daqmx.SetWriteRegenMode(self.AOtaskHandle, daqmx.Val_DoNotAllowRegen)
 
         # Setup a callback function to run once the DAQmx driver finishes
         def DoneCallback_py(taskHandle, status, callbackData_ptr):
@@ -76,14 +91,20 @@ class WaveGen(QThread):
         daqmx.RegisterDoneEvent(self.AOtaskHandle, 0, DoneCallback, None)
 
         # Output the rampup time series
-        daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0,
-                             daqmx.Val_GroupByChannel, rampup_ts)
+        daqmx.WriteAnalogF64(
+            self.AOtaskHandle,
+            self.buffsize,
+            False,
+            10.0,
+            daqmx.Val_GroupByChannel,
+            rampup_ts,
+        )
 
         daqmx.StartTask(self.AOtaskHandle)
 
         # Wait a second to allow the DAQmx buffer to empty
         if self.wavetype == "Regular":
-            time.sleep(self.period*0.99) # was self.period*0.4
+            time.sleep(self.period * 0.99)  # was self.period*0.4
         else:
             time.sleep(0.99)
 
@@ -100,13 +121,19 @@ class WaveGen(QThread):
                         self.dataw = tsparts[i % 120, :]
                     else:
                         self.dataw = tsparts[i, :]
-                daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False,
-                        10.0, daqmx.Val_GroupByChannel, self.dataw)
+                daqmx.WriteAnalogF64(
+                    self.AOtaskHandle,
+                    self.buffsize,
+                    False,
+                    10.0,
+                    daqmx.Val_GroupByChannel,
+                    self.dataw,
+                )
                 i += 1
             if self.wavetype == "Regular":
-                time.sleep(0.99*self.period)
+                time.sleep(0.99 * self.period)
             else:
-                time.sleep(0.99) # Was self.period
+                time.sleep(0.99)  # Was self.period
 
         # After disabled, initiate rampdown time series
         if self.wavetype != "Regular":
@@ -117,8 +144,14 @@ class WaveGen(QThread):
         else:
             self.rampdown_ts = ramp_ts(self.dataw, "down")
         # Write rampdown time series
-        daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0,
-                                 daqmx.Val_GroupByChannel, self.rampdown_ts)
+        daqmx.WriteAnalogF64(
+            self.AOtaskHandle,
+            self.buffsize,
+            False,
+            10.0,
+            daqmx.Val_GroupByChannel,
+            self.rampdown_ts,
+        )
         # Keep running, part of PyDAQmx callback syntax
         while True:
             pass
