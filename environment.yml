@@ -2,12 +2,15 @@ name: makewaves
 channels:
 - conda-forge
 dependencies:
+- h5py
 - numpy
+- pandas
 - pyqt
 - python
+- pywin32
 - pip
 - qt
 - pip:
   - pydaqmx
-  - daqmx
+  - daqmx  # TODO: Install from GitHub
   - pythonqwt
