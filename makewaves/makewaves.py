@@ -5,7 +5,13 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import QtGui
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QDoubleSpinBox, QTableWidgetItem
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QLabel,
+    QDoubleSpinBox,
+    QTableWidgetItem,
+)
 from PyQt5.QtCore import *
 from .mainwindow import *
 import qwt as Qwt
@@ -24,39 +30,48 @@ _thisdir = os.path.dirname(os.path.abspath(__file__))
 settings_dir = os.path.join(_thisdir, "settings")
 
 # Spectral parameters for random waves
-bret_params = [("Significant Wave Height", 0.1),
-               ("Significant Wave Period", 1.0),
-               ("Scale Ratio", 1.0)]
+bret_params = [
+    ("Significant Wave Height", 0.1),
+    ("Significant Wave Period", 1.0),
+    ("Scale Ratio", 1.0),
+]
 
-jonswap_params = [("Significant Wave Height", 0.1),
-                  ("Significant Wave Period", 1.0),
-                  ("Scale Ratio", 1.0),
-                  ("Gamma", 3.3),
-                  ("Sigma A", 0.07),
-                  ("Sigma B", 0.09)]
+jonswap_params = [
+    ("Significant Wave Height", 0.1),
+    ("Significant Wave Period", 1.0),
+    ("Scale Ratio", 1.0),
+    ("Gamma", 3.3),
+    ("Sigma A", 0.07),
+    ("Sigma B", 0.09),
+]
 
-nhextreme_params = [("Significant Wave Height", 6.58),
-                    ("Significant Wave Period", 10.5),
-                    ("Scale Ratio", 15.2),
-                    ("Gamma", 3.95),
-                    ("Sigma A", 0.45),
-                    ("Sigma B", 0.15),
-                    ("P", 4.85)]
+nhextreme_params = [
+    ("Significant Wave Height", 6.58),
+    ("Significant Wave Period", 10.5),
+    ("Scale Ratio", 15.2),
+    ("Gamma", 3.95),
+    ("Sigma A", 0.45),
+    ("Sigma B", 0.15),
+    ("P", 4.85),
+]
 
-nhtypical_params = [("Significant Wave Height", 1.21),
-                    ("Significant Wave Period 1", 10.0),
-                    ("Significant Wave Period 2", 5.34),
-                    ("Scale Ratio", 15.2),
-                    ("Gamma 1", 6.75),
-                    ("Gamma 2", 0.5),
-                    ("P", 4.34)]
+nhtypical_params = [
+    ("Significant Wave Height", 1.21),
+    ("Significant Wave Period 1", 10.0),
+    ("Significant Wave Period 2", 5.34),
+    ("Scale Ratio", 15.2),
+    ("Gamma 1", 6.75),
+    ("Gamma 2", 0.5),
+    ("P", 4.34),
+]
 
-pm_params = [("Wind Speed", 2.0),
-             ("Scale Ratio", 1.0)]
+pm_params = [("Wind Speed", 2.0), ("Scale Ratio", 1.0)]
 
-rw_params = {"Bretschneider" : bret_params,
-             "JONSWAP" : jonswap_params,
-             "Pierson-Moskowitz" : pm_params}
+rw_params = {
+    "Bretschneider": bret_params,
+    "JONSWAP": jonswap_params,
+    "Pierson-Moskowitz": pm_params,
+}
 
 # Some universal constants
 paddle_height = 1.0
@@ -73,8 +88,8 @@ if not os.path.isfile(periods_fpath) or not os.path.isfile(maxh_fpath):
 
 periods = np.round(np.load(periods_fpath), decimals=4)
 maxH = np.load(maxh_fpath)
-minL = 2*np.pi/wml.dispsolver(2*np.pi/0.65, water_depth, decimals=2)
-maxL = 2*np.pi/wml.dispsolver(2*np.pi/4.50, water_depth, decimals=2)
+minL = 2 * np.pi / wml.dispsolver(2 * np.pi / 0.65, water_depth, decimals=2)
+maxL = 2 * np.pi / wml.dispsolver(2 * np.pi / 4.50, water_depth, decimals=2)
 
 # Constants specific to rand waves
 minperiod_rand = 0.90
@@ -111,7 +126,7 @@ class MainWindow(QMainWindow):
         self.ui.tabwidget.setCurrentIndex(0)
 
         # Initialize slider values
-        hmax = maxH[np.where(periods==np.round(1, decimals=2))[0]]
+        hmax = maxH[np.where(periods == np.round(1, decimals=2))[0]]
         self.ui.slider_height.setRange(0.0, float(hmax))
         self.ui.spinbox_wave_height.setMaximum(float(hmax))
         self.ui.slider_height.setValue(self.ui.spinbox_wave_height.value())
@@ -122,15 +137,18 @@ class MainWindow(QMainWindow):
         self.ui.slider_horiz.setValue(self.ui.spinbox_wave_period.value())
 
         # Initialize wavelength value
-        wl = 2*np.pi/wml.dispsolver(2*np.pi/1.0, water_depth, decimals=2)
+        wl = (
+            2
+            * np.pi
+            / wml.dispsolver(2 * np.pi / 1.0, water_depth, decimals=2)
+        )
         self.ui.spinbox_wavelength.setValue(wl)
 
         # Initialize plot settings
         self.initialize_plots()
         self.connectslots()
         # Add dock widgets to right dock widget area and tabify them
-        self.tabifyDockWidget(self.ui.dock_time_series,
-                              self.ui.dock_spectrum)
+        self.tabifyDockWidget(self.ui.dock_time_series, self.ui.dock_spectrum)
         self.on_rw_changed()
 
     def load_settings(self):
@@ -145,9 +163,11 @@ class MainWindow(QMainWindow):
             if self.settings["Last PC name"] == self.pcid:
                 if "Last window location" in self.settings:
                     self.move(
-                        QtCore.QPoint(self.settings["Last window location"][0],
-                                      self.settings["Last window location"][1])
+                        QtCore.QPoint(
+                            self.settings["Last window location"][0],
+                            self.settings["Last window location"][1],
                         )
+                    )
 
     def setup_spinboxes(self, nboxes):
         """Add double spin boxes to the random waves table widget"""
@@ -169,9 +189,9 @@ class MainWindow(QMainWindow):
         self.grid = Qwt.QwtPlotGrid()
         self.grid.attach(self.plot_ts)
         self.grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
-        self.curve_ts = Qwt.QwtPlotCurve('')
+        self.curve_ts = Qwt.QwtPlotCurve("")
         self.curve_ts.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
-        self.pen = QPen(QColor('black'))
+        self.pen = QPen(QColor("black"))
         self.pen.setWidth(1.5)
         self.curve_ts.setPen(self.pen)
         self.curve_ts.attach(self.plot_ts)
@@ -186,9 +206,9 @@ class MainWindow(QMainWindow):
         self.grid = Qwt.QwtPlotGrid()
         self.grid.attach(self.plot_spec)
         self.grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
-        self.curve_spec = Qwt.QwtPlotCurve('')
+        self.curve_spec = Qwt.QwtPlotCurve("")
         self.curve_spec.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
-        self.pen = QPen(QColor('black'))
+        self.pen = QPen(QColor("black"))
         self.pen.setWidth(1.5)
         self.curve_spec.setPen(self.pen)
         self.curve_spec.attach(self.plot_spec)
@@ -228,7 +248,7 @@ class MainWindow(QMainWindow):
         # Plot output time series
         if self.wavegen.making:
             ydata = self.wavegen.ts_plot
-            xdata = np.asarray(np.arange(len(ydata))/self.wavegen.sr)
+            xdata = np.asarray(np.arange(len(ydata)) / self.wavegen.sr)
             self.plot_ts.setAxisScale(Qwt.QwtPlot.xBottom, 0, xdata[-1])
             self.curve_ts.setData(xdata, ydata)
             self.plot_ts.replot()
@@ -246,19 +266,27 @@ class MainWindow(QMainWindow):
     def on_wp_changed(self):
         wp = self.ui.spinbox_wave_period.value()
         if self.parameters == "HT":
-            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0][0]]
+            hmax = maxH[np.where(periods == np.round(wp, decimals=2))[0][0]]
             self.ui.spinbox_wave_height.setMaximum(hmax)
             self.ui.slider_height.setRange(0, hmax, 0.001, 10)
-            wl = 2*np.pi/wml.dispsolver(2*np.pi/wp, water_depth, decimals=1)
+            wl = (
+                2
+                * np.pi
+                / wml.dispsolver(2 * np.pi / wp, water_depth, decimals=1)
+            )
             self.ui.spinbox_wavelength.setValue(wl)
             self.ui.slider_horiz.setValue(wp)
 
     def on_wl_changed(self):
         if self.parameters == "HL":
             wl = self.ui.spinbox_wavelength.value()
-            wp = 2*np.pi/wml.revdispsolver(2*np.pi/wl, water_depth, decimals=2)
+            wp = (
+                2
+                * np.pi
+                / wml.revdispsolver(2 * np.pi / wl, water_depth, decimals=2)
+            )
             self.ui.spinbox_wave_period.setValue(wp)
-            hmax = maxH[np.where(periods==np.round(wp, decimals=2))[0][0]]
+            hmax = maxH[np.where(periods == np.round(wp, decimals=2))[0][0]]
             self.ui.spinbox_wave_height.setMaximum(hmax)
             self.ui.slider_height.setRange(0, hmax, 0.001, 10)
             self.ui.slider_horiz.setValue(wl)
@@ -277,7 +305,11 @@ class MainWindow(QMainWindow):
         if self.ui.combobox_regparams.currentIndex() == 0:
             self.parameters = "HT"
             wl = self.ui.spinbox_wavelength.value()
-            wp = 2*np.pi/wml.revdispsolver(2*np.pi/wl, water_depth, decimals=1)
+            wp = (
+                2
+                * np.pi
+                / wml.revdispsolver(2 * np.pi / wl, water_depth, decimals=1)
+            )
             self.ui.spinbox_wave_period.setEnabled(True)
             self.ui.spinbox_wavelength.setDisabled(True)
             self.ui.slider_horiz.setRange(0.5, 5.0, 0.001, 10)
@@ -290,7 +322,11 @@ class MainWindow(QMainWindow):
         elif self.ui.combobox_regparams.currentIndex() == 1:
             self.parameters = "HL"
             wp = self.ui.spinbox_wave_period.value()
-            wl = 2*np.pi/wml.dispsolver(2*np.pi/wp, water_depth, decimals=1)
+            wl = (
+                2
+                * np.pi
+                / wml.dispsolver(2 * np.pi / wp, water_depth, decimals=1)
+            )
             self.ui.spinbox_wave_period.setEnabled(False)
             self.ui.spinbox_wavelength.setDisabled(False)
             self.ui.slider_horiz.setRange(minL, maxL, 0.001, 10)
@@ -322,7 +358,7 @@ class MainWindow(QMainWindow):
 
     def on_rw_param_changed(self):
         """If a random wave parameter is changed, start a thread to check
-            if the parameters don't over-extend the piston."""
+        if the parameters don't over-extend the piston."""
         rwtype = self.ui.combobox_randwavetype.currentText()
         wave = Wave(rwtype)
         if rwtype == "Bretschneider" or rwtype == "JONSWAP":
@@ -362,10 +398,14 @@ class MainWindow(QMainWindow):
                 if rspec == "Bretschneider" or rspec == "JONSWAP":
                     self.wavegen.wave.sig_height = self.spinboxes_rw[0].value()
                     self.wavegen.wave.sig_period = self.spinboxes_rw[1].value()
-                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[2].value()
+                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[
+                        2
+                    ].value()
                 elif rspec == "Pierson-Moskowitz":
                     self.wavegen.wave.windspeed = self.spinboxes_rw[0].value()
-                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[1].value()
+                    self.wavegen.wave.scale_ratio = self.spinboxes_rw[
+                        1
+                    ].value()
                 self.wavegen.start()
             self.timer.start(500)
 
@@ -418,11 +458,13 @@ class MainWindow(QMainWindow):
                 while not self.wavegen.cleared:
                     # The progress here is fake, just calibrated to be close
                     time.sleep(0.1)
-                    progress += int(60*0.1/self.wavegen.period)
+                    progress += int(60 * 0.1 / self.wavegen.period)
                     pbar.setValue(progress)
                 dialog.close()
-        self.settings["Last window location"] = [self.pos().x(),
-                                                 self.pos().y()]
+        self.settings["Last window location"] = [
+            self.pos().x(),
+            self.pos().y(),
+        ]
         self.settings["Last PC name"] = self.pcid
         with open(os.path.join(settings_dir, "app.json"), "w") as fn:
             json.dump(self.settings, fn, indent=4)
@@ -454,5 +496,5 @@ def main():
 
 
 # Boilerplate code to run the Python application
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
