@@ -3,14 +3,15 @@ channels:
 - conda-forge
 dependencies:
 - h5py
+- matplotlib
 - numpy
 - pandas
-- pyqt
-- python
+- pyqt=5
+- python=3
 - pywin32
 - pip
 - qt
 - pip:
-  - pydaqmx
-  - daqmx  # TODO: Install from GitHub
+  - git+https://github.com/petebachant/daqmx.git
   - pythonqwt
+  - pyqt5-tools
