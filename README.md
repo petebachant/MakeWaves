@@ -20,7 +20,7 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
    environment, if
 3. Activate the `makewaves` environment with `conda activate makewaves` and
    install with `pip install .`
-4. Optional: Create a shortcut by running `python create_shortcut.py`.
+4. Optional: Create a shortcut by running `make shortcut`.
 
 ## Contributing
 

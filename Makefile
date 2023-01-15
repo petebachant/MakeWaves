@@ -7,3 +7,7 @@ run:
 
 ui:
 	@bash scripts/makeui.sh
+
+
+shortcut:
+	@python scripts/create_shortcut.py
