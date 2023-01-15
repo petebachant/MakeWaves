@@ -3,7 +3,6 @@ channels:
 - conda-forge
 dependencies:
 - h5py
-- matplotlib
 - numpy
 - pandas
 - pyqt=5
@@ -12,6 +11,5 @@ dependencies:
 - pip
 - qt
 - pip:
-  - git+https://github.com/petebachant/daqmx.git
+  - https://github.com/petebachant/daqmx/archive/refs/heads/master.zip
   - pythonqwt
-  - pyqt5-tools

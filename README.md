@@ -6,16 +6,18 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
 
 ## Installation/running
 
-1. Install system dependencies
-    1. Git, of course
-    1. NI DAQmx driver (See National Instruments website for download)
+1. Install system dependencies:
+    1. Git, of course.
+    1. NI DAQmx driver (See National Instruments website for download).
     1. [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
-       (skip this step if you already have `conda` or `mamba` installed)
-    1. `make` (Recommend installing with Chocolatey on Windows)
+       (skip this step if you already have `conda` or `mamba` installed).
+    1. `make` (Recommend installing with Chocolatey on Windows).
 2. Clone this repository locally
-   (`git clone https://github.com/petebachant/MakeWaves.git makewaves`)
+   (`git clone https://github.com/petebachant/MakeWaves.git makewaves`).
 3. Move into the repository directory and create the environment with either
-   `mamba env create` or `conda env create`
+   `mamba env create` or `conda env create`.
+   Alternatively, you can install the dependencies manually into a base
+   environment, if
 3. Activate the `makewaves` environment with `conda activate makewaves` and
    install with `pip install .`
 4. Optional: Create a shortcut by running `python create_shortcut.py`.
@@ -25,6 +27,12 @@ MakeWaves is an app for generating regular and random waves with UNH's flap-styl
 See the [wiki](https://github.com/petebachant/MakeWaves/wiki#wiki-contributing).
 
 ### Development tips
+
+Additional dev dependencies can be installed with
+
+```sh
+pip install black isort pyqt5-tools
+```
 
 To run from the repository, e.g., for testing changes, run `make`.
 To rebuild the UI after editing `mainwindow.ui` in Qt Designer, run `make ui`.

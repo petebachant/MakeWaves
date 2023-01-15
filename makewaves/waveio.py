@@ -1,21 +1,11 @@
 """I/O operations."""
 
-from __future__ import division, print_function
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-try:
-    from wavetsgen import Wave, ramp_ts
-except ImportError:
-    from .wavetsgen import Wave, ramp_ts
+from .wavetsgen import Wave, ramp_ts
 import time
-
-try:
-    import daqmx
-except ImportError:
-    import warnings
-
-    warnings.warn("Cannot import daqmx", ImportWarning)
+import daqmx
 import numpy as np
 
 
