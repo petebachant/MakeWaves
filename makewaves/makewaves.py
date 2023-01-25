@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
         self.wavegen = None
         self.calcthread = None
 
-        # Load settings is they exist
+        # Load settings if they exist
         self.load_settings()
 
         # Add a label to the status bar
