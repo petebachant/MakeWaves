@@ -16,6 +16,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import (
+    QAction,
+    QActionGroup,
     QApplication,
     QDoubleSpinBox,
     QLabel,
@@ -115,12 +117,26 @@ class MainWindow(QMainWindow):
         devices = daqmx.GetSysDevNames()
         phys_chans = []
         for dev in devices:
-            phys_chans.append(daqmx.GetDevAOPhysicalChans(dev))
+            phys_chans += daqmx.GetDevAOPhysicalChans(dev)
         self.ao_physical_channels = phys_chans
         self.ao_physical_channel = self.ao_physical_channels[0]
 
         # Load settings if they exist
         self.load_settings()
+
+        # Setup physical channels action group
+        chans_action_group = QActionGroup(self.ui.menu_ao_physical_channel)
+        for c in self.ao_physical_channels:
+            action = QAction(
+                c,
+                self.ui.menu_ao_physical_channel,
+                checkable=True,
+                checked=c == self.ao_physical_channel,
+            )
+            self.ui.menu_ao_physical_channel.addAction(action)
+            chans_action_group.addAction(action)
+        chans_action_group.setExclusive(True)
+        chans_action_group.triggered.connect(self.on_ao_changed)
 
         # Add a label to the status bar
         self.slabel = QLabel()
@@ -270,6 +286,9 @@ class MainWindow(QMainWindow):
             self.plot_spec.setAxisScale(Qwt.QwtPlot.xBottom, 0, 5)
             self.curve_spec.setData(xdata, ydata)
             self.plot_spec.replot()
+
+    def on_ao_changed(self, action):
+        self.ao_physical_channel = action.text()
 
     def on_wh_changed(self):
         # Need some way to let user continue typing before changing slider
@@ -426,7 +445,9 @@ class MainWindow(QMainWindow):
                 self.slabel.setText("Generating regular waves... ")
                 self.period = self.ui.spinbox_wave_period.value()
                 self.height = self.ui.spinbox_wave_height.value()
-                self.wavegen = WaveGen("Regular")
+                self.wavegen = WaveGen(
+                    "Regular", ao_physical_channel=self.ao_physical_channel
+                )
                 self.wavegen.wave.period = self.period
                 self.wavegen.wave.height = self.height
                 self.wavegen.start()
@@ -435,7 +456,9 @@ class MainWindow(QMainWindow):
                 """Create random waves."""
                 rspec = self.ui.combobox_randwavetype.currentText()
                 self.slabel.setText("Generating " + rspec + " waves... ")
-                self.wavegen = WaveGen(rspec)
+                self.wavegen = WaveGen(
+                    rspec, ao_physical_channel=self.ao_physical_channel
+                )
                 if rspec == "Bretschneider" or rspec == "JONSWAP":
                     self.wavegen.wave.sig_height = self.spinboxes_rw[0].value()
                     self.wavegen.wave.sig_period = self.spinboxes_rw[1].value()
