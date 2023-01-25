@@ -10,11 +10,12 @@ import numpy as np
 
 
 class WaveGen(QThread):
-    def __init__(self, wavetype):
+    def __init__(self, wavetype, ao_physical_channel="Dev1/ao0"):
         QThread.__init__(self)
         self.wavetype = wavetype
         self.wave = Wave(self.wavetype)
         self.enable = True
+        self.ao_physical_channel = ao_physical_channel
 
     def run(self):
         self.rampeddown = False
@@ -55,7 +56,7 @@ class WaveGen(QThread):
         daqmx.CreateTask("", self.AOtaskHandle)
         daqmx.CreateAOVoltageChan(
             self.AOtaskHandle,
-            "Dev1/ao0",
+            self.ao_physical_channel,
             "",
             -10.0,
             10.0,
