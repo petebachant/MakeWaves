@@ -1,31 +1,34 @@
 """MakeWaves main application."""
 
-from __future__ import division, print_function, absolute_import
+from __future__ import absolute_import, division, print_function
+
+import json
+import os
+import platform
+import sys
+import time
+
+import daqmx
+import numpy as np
+import qwt as Qwt
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtGui
-from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import (
-    QMainWindow,
     QApplication,
-    QLabel,
     QDoubleSpinBox,
+    QLabel,
+    QMainWindow,
     QTableWidgetItem,
 )
-from PyQt5.QtCore import *
-from .mainwindow import *
-import qwt as Qwt
-import sys
-import os
-import platform
+
+from makewaves import __version__
+
 from . import wavemakerlimits as wml
-import numpy as np
-import time
-import json
+from .mainwindow import *
 from .waveio import WaveGen
 from .wavetsgen import Wave
-from makewaves import __version__
 
 _thisdir = os.path.dirname(os.path.abspath(__file__))
 settings_dir = os.path.join(_thisdir, "settings")
@@ -108,6 +111,14 @@ class MainWindow(QMainWindow):
         self.wavegen = None
         self.calcthread = None
 
+        # Initialize AO physical channel
+        devices = daqmx.GetSysDevNames()
+        phys_chans = []
+        for dev in devices:
+            phys_chans.append(daqmx.GetDevAOPhysicalChans(dev))
+        self.ao_physical_channels = phys_chans
+        self.ao_physical_channel = self.ao_physical_channels[0]
+
         # Load settings if they exist
         self.load_settings()
 
@@ -164,6 +175,12 @@ class MainWindow(QMainWindow):
                             self.settings["Last window location"][1],
                         )
                     )
+                ao_phys_chan = self.settings.get("AO physical channel")
+                if (
+                    ao_phys_chan is not None
+                    and ao_phys_chan in self.ao_physical_channels
+                ):
+                    self.ao_physical_channel = ao_phys_chan
 
     def setup_spinboxes(self, nboxes):
         """Add double spin boxes to the random waves table widget"""
@@ -490,6 +507,7 @@ class MainWindow(QMainWindow):
             self.pos().y(),
         ]
         self.settings["Last PC name"] = self.pcid
+        self.settings["AO physical channel"] = self.ao_physical_channel
         with open(os.path.join(settings_dir, "app.json"), "w") as fn:
             json.dump(self.settings, fn, indent=4)
 
