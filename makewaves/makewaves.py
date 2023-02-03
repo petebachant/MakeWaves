@@ -115,10 +115,12 @@ class MainWindow(QMainWindow):
 
         # Initialize AO physical channel
         devices = daqmx.GetSysDevNames()
+        print("Found system devices:", devices)
         phys_chans = []
         for dev in devices:
-            phys_chans += daqmx.GetDevAOPhysicalChans(dev)
+            phys_chans += [c for c in daqmx.GetDevAOPhysicalChans(dev) if c]
         self.ao_physical_channels = phys_chans
+        print("Detected AO physical channels:", phys_chans)
         self.ao_physical_channel = self.ao_physical_channels[0]
 
         # Load settings if they exist
