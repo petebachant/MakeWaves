@@ -1,26 +1,21 @@
 """I/O operations."""
 
-from __future__ import division, print_function
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-try:
-    from wavetsgen import Wave, ramp_ts
-except ImportError:
-    from .wavetsgen import Wave, ramp_ts
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+
+from .wavetsgen import Wave, ramp_ts
 import time
-try:
-    import daqmx
-except ImportError:
-    import warnings
-    warnings.warn("Cannot import daqmx", ImportWarning)
+import daqmx
 import numpy as np
 
+
 class WaveGen(QThread):
-    def __init__(self, wavetype):
+    def __init__(self, wavetype, ao_physical_channel="Dev1/ao0"):
         QThread.__init__(self)
         self.wavetype = wavetype
         self.wave = Wave(self.wavetype)
         self.enable = True
+        self.ao_physical_channel = ao_physical_channel
 
     def run(self):
         self.rampeddown = False
@@ -59,31 +54,40 @@ class WaveGen(QThread):
 
         self.AOtaskHandle = daqmx.TaskHandle()
         daqmx.CreateTask("", self.AOtaskHandle)
-        daqmx.CreateAOVoltageChan(self.AOtaskHandle, "Dev1/ao0", "",
-                                  -10.0, 10.0, daqmx.Val_Volts, None)
-        daqmx.CfgSampClkTiming(self.AOtaskHandle, "", self.sr,
-                               daqmx.Val_Rising, daqmx.Val_ContSamps,
-                               self.buffsize)
-        daqmx.SetWriteRegenMode(self.AOtaskHandle,
-                                daqmx.Val_DoNotAllowRegen)
-
-        # Setup a callback function to run once the DAQmx driver finishes
-        def DoneCallback_py(taskHandle, status, callbackData_ptr):
-            self.rampeddown = True
-            return 0
-
-        DoneCallback = daqmx.DoneEventCallbackPtr(DoneCallback_py)
-        daqmx.RegisterDoneEvent(self.AOtaskHandle, 0, DoneCallback, None)
-
+        daqmx.CreateAOVoltageChan(
+            self.AOtaskHandle,
+            self.ao_physical_channel,
+            "",
+            -10.0,
+            10.0,
+            daqmx.Val_Volts,
+            None,
+        )
+        daqmx.CfgSampClkTiming(
+            self.AOtaskHandle,
+            "",
+            self.sr,
+            daqmx.Val_Rising,
+            daqmx.Val_ContSamps,
+            self.buffsize,
+        )
+        daqmx.SetWriteRegenMode(self.AOtaskHandle, daqmx.Val_DoNotAllowRegen)
+        print("Writing the rampup time series")
         # Output the rampup time series
-        daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0,
-                             daqmx.Val_GroupByChannel, rampup_ts)
+        daqmx.WriteAnalogF64(
+            self.AOtaskHandle,
+            self.buffsize,
+            False,
+            10.0,
+            daqmx.Val_GroupByChannel,
+            rampup_ts,
+        )
 
         daqmx.StartTask(self.AOtaskHandle)
 
         # Wait a second to allow the DAQmx buffer to empty
         if self.wavetype == "Regular":
-            time.sleep(self.period*0.99) # was self.period*0.4
+            time.sleep(self.period * 0.99)  # was self.period*0.4
         else:
             time.sleep(0.99)
 
@@ -93,6 +97,7 @@ class WaveGen(QThread):
 
         # Main running loop that writes data to DAQmx buffer
         while self.enable:
+            print("Writing main wave time series data iteration", i)
             writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
             if writeSpaceAvail >= self.buffsize:
                 if self.wavetype != "Regular":
@@ -100,14 +105,21 @@ class WaveGen(QThread):
                         self.dataw = tsparts[i % 120, :]
                     else:
                         self.dataw = tsparts[i, :]
-                daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False,
-                        10.0, daqmx.Val_GroupByChannel, self.dataw)
+                daqmx.WriteAnalogF64(
+                    self.AOtaskHandle,
+                    self.buffsize,
+                    False,
+                    10.0,
+                    daqmx.Val_GroupByChannel,
+                    self.dataw,
+                )
                 i += 1
             if self.wavetype == "Regular":
-                time.sleep(0.99*self.period)
+                time.sleep(0.99 * self.period)
             else:
-                time.sleep(0.99) # Was self.period
+                time.sleep(0.99)  # Was self.period
 
+        print("Output disabled; ramping down")
         # After disabled, initiate rampdown time series
         if self.wavetype != "Regular":
             if i >= 120:
@@ -117,11 +129,27 @@ class WaveGen(QThread):
         else:
             self.rampdown_ts = ramp_ts(self.dataw, "down")
         # Write rampdown time series
-        daqmx.WriteAnalogF64(self.AOtaskHandle, self.buffsize, False, 10.0,
-                                 daqmx.Val_GroupByChannel, self.rampdown_ts)
+        print(f"Writing rampdown time series (len: {len(self.rampdown_ts)})")
+        daqmx.WriteAnalogF64(
+            self.AOtaskHandle,
+            self.buffsize,
+            False,
+            10.0,
+            daqmx.Val_GroupByChannel,
+            self.rampdown_ts,
+        )
         # Keep running, part of PyDAQmx callback syntax
-        while True:
-            pass
+        print("Waiting to ramp down")
+        while (
+            writeSpaceAvail := daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
+        ) < self.buffsize:
+            print(writeSpaceAvail, "samples available in buffer")
+            time.sleep(0.5)
+        daqmx.StopTask(self.AOtaskHandle)
+        daqmx.WaitUntilTaskDone(self.AOtaskHandle, timeout=10.0)
+        print("Done ramping down")
+        daqmx.ClearTask(self.AOtaskHandle)
+        self.rampeddown = True
 
     def stop(self):
         self.stopgen = WaveStop(self)

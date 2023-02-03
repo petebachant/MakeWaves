@@ -1,27 +1,41 @@
-MakeWaves
-=========
+# MakeWaves
 
-MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker. The app is still in development.
-See below for how to help.
+MakeWaves is an app for generating regular and random waves with UNH's flap-style wavemaker.
 
 ![Main window](http://i.imgur.com/9If9o2u.png)
 
+## Installation/running
 
-Installation/running
---------------------
+1. Install system dependencies:
+   1. Git, of course.
+   1. NI DAQmx driver (See National Instruments website for download).
+   1. [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge)
+      (skip this step if you already have `conda` or `mamba` installed).
+   1. `make` (Recommend installing with Chocolatey on Windows).
+2. Clone this repository locally
+   (`git clone https://github.com/petebachant/MakeWaves.git makewaves`).
+3. Move into the repository directory and create the environment with either
+   `mamba env create` or `conda env create`.
+   Alternatively, you can install the dependencies manually into a base
+   environment.
+4. Activate the `makewaves` environment with `conda activate makewaves`
+   (not necessary if installing into a base environment) and
+   install with `pip install .`
+5. Optional: Create a shortcut by running `make shortcut`.
 
-1. Install dependencies
-    1. NI DAQmx driver (See National Instruments website for download)
-    1. [Python (x,y)](http://ftp.ntua.gr/pub/devel/pythonxy/Python%28x,y%29-2.7.10.0.exe) (uninstalling any existing Python
-     distributions first is recommmended)
-    1. [PyDAQmx](http://github.com/clade/PyDAQmx.git) (`pip install pydaqmx`)
-    1. [daqmx](http://github.com/petebachant/daqmx.git) (`pip install https://github.com/petebachant/daqmx/archive/master.zip`)
-2. Clone this repository locally (`git clone https://github.com/petebachant/MakeWaves`)
-3. Move into the repository directory and install with `pip install .`
-4. Optional: Create a shortcut by running `python create_shortcut.py`.
-
-
-Contributing
-------------
+## Contributing
 
 See the [wiki](https://github.com/petebachant/MakeWaves/wiki#wiki-contributing).
+
+### Development tips
+
+Additional dev dependencies can be installed with
+
+```sh
+pip install black isort
+```
+
+To run from the repository, e.g., for testing changes, run `make`.
+To rebuild the UI after editing `mainwindow.ui` in Qt Designer, run `make ui`.
+Note this will change the `mainwindow.py` module, which will need to be
+committed to the repo.

@@ -1,28 +1,15 @@
 name: makewaves
 channels:
-- defaults
+- conda-forge
 dependencies:
-- ca-certificates=2017.08.26=h94faf87_0
-- certifi=2017.11.5=py35h456c6ae_0
-- icc_rt=2017.0.4=h97af966_0
-- intel-openmp=2018.0.0=hd92c6cd_8
-- jpeg=8d=vc14_2
-- libpng=1.6.32=h140d38e_4
-- libtiff=4.0.6=vc14_2
-- mkl=2018.0.1=h2108138_4
-- numpy=1.13.3=py35hb7e80fb_0
-- openssl=1.0.2n=h74b6da3_0
-- pip=9.0.1=py35h691316f_4
-- pyqt=4.11.4=py35_7
-- python=3.5.4=h1357f44_23
-- qt=4.8.7=vc14_9
-- setuptools=36.5.0=py35h21a22e4_0
-- sip=4.18=py35_0
-- vc=14=h2379b0c_2
-- vs2015_runtime=14.0.25123=hd4c4e62_2
-- wheel=0.30.0=py35h38a90bc_1
-- wincertstore=0.2=py35hfebbdb8_0
-- zlib=1.2.11=h8395fce_2
+- h5py
+- numpy
+- pandas
+- pyqt=5
+- python=3
+- pywin32
+- pip
+- qt
 - pip:
-  - pydaqmx==1.4.1
-  - pyqwt==5.2.1
+  - https://github.com/petebachant/daqmx/archive/refs/heads/master.zip
+  - pythonqwt
