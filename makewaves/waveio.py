@@ -34,6 +34,10 @@ class WaveGen(QThread):
         # Get data to write from the wave object
         self.ts_plot = self.wave.ts_elev
         self.dataw = self.wave.ts_volts
+        print(
+            "Computed wave with min/max (V): "
+            f"{min(self.dataw):.2f}, {max(self.dataw):.2f}"
+        )
 
         # If random waves, divide up time series into 120 256 sample parts
         if self.wavetype != "Regular":
@@ -114,10 +118,7 @@ class WaveGen(QThread):
                     self.dataw,
                 )
                 i += 1
-            if self.wavetype == "Regular":
-                time.sleep(0.99 * self.period)
-            else:
-                time.sleep(0.99)  # Was self.period
+            self.sleep()
 
         print("Output disabled; ramping down")
         # After disabled, initiate rampdown time series
@@ -128,7 +129,6 @@ class WaveGen(QThread):
                 self.rampdown_ts = ramp_ts(tsparts[i, :], "down")
         else:
             self.rampdown_ts = ramp_ts(self.dataw, "down")
-        # Write rampdown time series
         print(f"Writing rampdown time series (len: {len(self.rampdown_ts)})")
         daqmx.WriteAnalogF64(
             self.AOtaskHandle,
@@ -140,16 +140,19 @@ class WaveGen(QThread):
         )
         # Keep running, part of PyDAQmx callback syntax
         print("Waiting to ramp down")
-        while (
-            writeSpaceAvail := daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-        ) < self.buffsize:
-            print(writeSpaceAvail, "samples available in buffer")
-            time.sleep(0.5)
+        self.sleep()
         daqmx.StopTask(self.AOtaskHandle)
         daqmx.WaitUntilTaskDone(self.AOtaskHandle, timeout=10.0)
         print("Done ramping down")
         daqmx.ClearTask(self.AOtaskHandle)
         self.rampeddown = True
+
+    def sleep(self):
+        """Sleep between iterations."""
+        if self.wavetype == "Regular":
+            time.sleep(0.99 * self.period)
+        else:
+            time.sleep(0.99)  # Was self.period
 
     def stop(self):
         self.stopgen = WaveStop(self)
