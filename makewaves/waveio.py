@@ -138,17 +138,9 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             self.rampdown_ts,
         )
-        # Keep running, part of PyDAQmx callback syntax
-        print("Waiting to ramp down")
-        writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-        while writeSpaceAvail < self.buffsize:
-            writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-            print(
-                f"{writeSpaceAvail}/{self.buffsize} samples available in "
-                "buffer"
-            )
-            time.sleep(0.01)
+        self.sleep()
         # Write zeros to the buffer
+        print("Writing a buffer of zeros")
         daqmx.WriteAnalogF64(
             self.AOtaskHandle,
             self.buffsize,
