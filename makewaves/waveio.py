@@ -89,11 +89,8 @@ class WaveGen(QThread):
 
         daqmx.StartTask(self.AOtaskHandle)
 
-        # Wait a second to allow the DAQmx buffer to empty
-        if self.wavetype == "Regular":
-            time.sleep(self.period * 0.99)  # was self.period*0.4
-        else:
-            time.sleep(0.99)
+        # Wait to allow the DAQmx buffer to empty
+        self.sleep()
 
         # Set iteration variable to keep track of how many chunks of data
         # have been written
@@ -158,10 +155,11 @@ class WaveGen(QThread):
 
     def sleep(self):
         """Sleep between iterations."""
+        frac = 0.98
         if self.wavetype == "Regular":
-            time.sleep(0.99 * self.period)
+            time.sleep(frac * self.period)
         else:
-            time.sleep(0.99)  # Was self.period
+            time.sleep(frac)
 
     def stop(self):
         self.stopgen = WaveStop(self)
