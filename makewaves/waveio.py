@@ -87,7 +87,7 @@ class WaveGen(QThread):
             rampup_ts,
         )
         daqmx.StartTask(self.AOtaskHandle)
-        time.sleep(0.5)
+        self.sleep(time_taken=0.5)
 
         # Set iteration variable to keep track of how many chunks of data
         # have been written
@@ -159,8 +159,9 @@ class WaveGen(QThread):
         else:
             sleeptime = frac
         sleeptime -= time_taken
-        print("Sleeping", sleeptime, "seconds")
-        time.sleep(sleeptime)
+        if sleeptime > 0:
+            print("Sleeping", sleeptime, "seconds")
+            time.sleep(sleeptime)
 
     def stop(self):
         self.stopgen = WaveStop(self)
