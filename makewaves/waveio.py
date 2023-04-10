@@ -99,22 +99,22 @@ class WaveGen(QThread):
         # Main running loop that writes data to DAQmx buffer
         while self.enable:
             print("Writing main wave time series data iteration", i)
-            writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-            if writeSpaceAvail >= self.buffsize:
-                if self.wavetype != "Regular":
-                    if i >= 120:
-                        self.dataw = tsparts[i % 120, :]
-                    else:
-                        self.dataw = tsparts[i, :]
-                daqmx.WriteAnalogF64(
-                    self.AOtaskHandle,
-                    self.buffsize,
-                    False,
-                    10.0,
-                    daqmx.Val_GroupByChannel,
-                    self.dataw,
-                )
-                i += 1
+            write_space_avail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
+            print("Write space available:", write_space_avail)
+            if self.wavetype != "Regular":
+                if i >= 120:
+                    self.dataw = tsparts[i % 120, :]
+                else:
+                    self.dataw = tsparts[i, :]
+            daqmx.WriteAnalogF64(
+                self.AOtaskHandle,
+                self.buffsize,
+                False,
+                10.0,
+                daqmx.Val_GroupByChannel,
+                self.dataw,
+            )
+            i += 1
             self.sleep()
 
         print("Output disabled; ramping down")
