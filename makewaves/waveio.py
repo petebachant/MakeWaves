@@ -86,11 +86,8 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             rampup_ts,
         )
-
         daqmx.StartTask(self.AOtaskHandle)
-
-        # Wait to allow the DAQmx buffer to empty
-        self.sleep()
+        time.sleep(0.5)
 
         # Set iteration variable to keep track of how many chunks of data
         # have been written
@@ -98,6 +95,7 @@ class WaveGen(QThread):
 
         # Main running loop that writes data to DAQmx buffer
         while self.enable:
+            t0 = time.time()
             print("Writing main wave time series data iteration", i)
             write_space_avail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
             print("Write space available:", write_space_avail)
@@ -115,7 +113,7 @@ class WaveGen(QThread):
                 self.dataw,
             )
             i += 1
-            self.sleep()
+            self.sleep(time_taken=time.time() - t0)
 
         print("Output disabled; ramping down")
         # After disabled, initiate rampdown time series
@@ -153,13 +151,16 @@ class WaveGen(QThread):
         daqmx.ClearTask(self.AOtaskHandle)
         self.rampeddown = True
 
-    def sleep(self):
+    def sleep(self, time_taken=0.0):
         """Sleep between iterations."""
-        frac = 0.98
+        frac = 1.0
         if self.wavetype == "Regular":
-            time.sleep(frac * self.period)
+            sleeptime = frac * self.period
         else:
-            time.sleep(frac)
+            sleeptime = frac
+        sleeptime -= time_taken
+        print("Sleeping", sleeptime, "seconds")
+        time.sleep(sleeptime)
 
     def stop(self):
         self.stopgen = WaveStop(self)
