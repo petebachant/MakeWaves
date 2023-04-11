@@ -138,7 +138,7 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             self.rampdown_ts,
         )
-        self.n_iterations += 1
+        self.n_iterations += 1.5
         self.sleep()
         # Write zeros to the buffer
         print("Writing a buffer of zeros")
@@ -150,7 +150,7 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             np.zeros(self.buffsize),
         )
-        self.n_iterations += 1
+        self.n_iterations += 1.5
         self.sleep()
         daqmx.StopTask(self.AOtaskHandle)
         daqmx.WaitUntilTaskDone(self.AOtaskHandle, timeout=10.0)
@@ -161,7 +161,7 @@ class WaveGen(QThread):
     def sleep(self):
         """Sleep between iterations.
 
-        Our goal is to always stay 100 ms ahead of the FIFO buffer being empty.
+        Our goal is to always stay ahead of the FIFO buffer being empty.
         """
         # Based on how long we've been running and how many iterations we've
         # done, compute a time to sleep
@@ -170,7 +170,7 @@ class WaveGen(QThread):
         iteration_period = self.period if self.wavetype == "Regular" else 1.0
         t_expected = iteration_period * self.n_iterations
         print("t_expected:", t_expected)
-        sleeptime = t_expected - t_total - 0.1
+        sleeptime = t_expected - t_total - 0.2
         if sleeptime > 0:
             print("Sleeping", sleeptime, "seconds")
             time.sleep(sleeptime)
