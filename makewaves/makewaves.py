@@ -440,15 +440,15 @@ class MainWindow(QMainWindow):
             self.calcthread.start()
 
     def on_start(self):
+        """Make waves."""
         if self.ui.action_start.isChecked() == True:
-            """Make waves"""
             self.ui.action_start.setText("Stop ")
             self.ui.action_start.setToolTip("Stop Generating Waves")
             self.ui.action_start.setIcon(QIcon(":icons/agt_stop.png"))
             self.ui.tabwidget.setEnabled(False)
             wavetype = self.ui.tabwidget.currentIndex()
             if wavetype == 0:
-                """Create regular waves"""
+                # Create regular waves
                 self.slabel.setText("Generating regular waves... ")
                 self.period = self.ui.spinbox_wave_period.value()
                 self.height = self.ui.spinbox_wave_height.value()
@@ -460,7 +460,7 @@ class MainWindow(QMainWindow):
                 self.wavegen.start()
 
             elif wavetype == 1:
-                """Create random waves."""
+                # Create random waves
                 rspec = self.ui.combobox_randwavetype.currentText()
                 self.slabel.setText("Generating " + rspec + " waves... ")
                 self.wavegen = WaveGen(
@@ -479,9 +479,8 @@ class MainWindow(QMainWindow):
                     ].value()
                 self.wavegen.start()
             self.timer.start(500)
-
         elif self.ui.action_start.isChecked() == False:
-            """Stop making waves"""
+            # Stop making waves
             self.slabel.setText("Stopping... ")
             self.wavegen.stop()
             self.wavegen.stopgen.finished.connect(self.on_wave_finished)
