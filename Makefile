@@ -2,7 +2,7 @@
 
 
 run:
-	@python -c "import makewaves; makewaves.main()"
+	@winpty python -c "import makewaves; makewaves.main()"
 
 
 ui:

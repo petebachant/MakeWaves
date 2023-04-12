@@ -86,47 +86,47 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             rampup_ts,
         )
-
         daqmx.StartTask(self.AOtaskHandle)
-
-        # Wait a second to allow the DAQmx buffer to empty
-        if self.wavetype == "Regular":
-            time.sleep(self.period * 0.99)  # was self.period*0.4
-        else:
-            time.sleep(0.99)
-
-        # Set iteration variable to keep track of how many chunks of data
-        # have been written
-        i = 1
+        self.t_start = time.time()
+        self.n_iterations = 0
+        self.sleep()
 
         # Main running loop that writes data to DAQmx buffer
         while self.enable:
-            print("Writing main wave time series data iteration", i)
-            writeSpaceAvail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
-            if writeSpaceAvail >= self.buffsize:
-                if self.wavetype != "Regular":
-                    if i >= 120:
-                        self.dataw = tsparts[i % 120, :]
-                    else:
-                        self.dataw = tsparts[i, :]
-                daqmx.WriteAnalogF64(
-                    self.AOtaskHandle,
-                    self.buffsize,
-                    False,
-                    10.0,
-                    daqmx.Val_GroupByChannel,
-                    self.dataw,
-                )
-                i += 1
+            t0 = time.time()
+            print(
+                "Writing main wave time series data iteration",
+                self.n_iterations,
+            )
+            write_space_avail = daqmx.GetWriteSpaceAvail(self.AOtaskHandle)
+            print("Write space available:", write_space_avail)
+            if self.wavetype != "Regular":
+                if self.n_iterations >= 120:
+                    self.dataw = tsparts[self.n_iterations % 120, :]
+                else:
+                    self.dataw = tsparts[self.n_iterations, :]
+            daqmx.WriteAnalogF64(
+                self.AOtaskHandle,
+                self.buffsize,
+                False,
+                10.0,
+                daqmx.Val_GroupByChannel,
+                self.dataw,
+            )
+            self.n_iterations += 1
             self.sleep()
 
         print("Output disabled; ramping down")
         # After disabled, initiate rampdown time series
         if self.wavetype != "Regular":
-            if i >= 120:
-                self.rampdown_ts = ramp_ts(tsparts[i % 120, :], "down")
+            if self.n_iterations >= 120:
+                self.rampdown_ts = ramp_ts(
+                    tsparts[self.n_iterations % 120, :], "down"
+                )
             else:
-                self.rampdown_ts = ramp_ts(tsparts[i, :], "down")
+                self.rampdown_ts = ramp_ts(
+                    tsparts[self.n_iterations, :], "down"
+                )
         else:
             self.rampdown_ts = ramp_ts(self.dataw, "down")
         print(f"Writing rampdown time series (len: {len(self.rampdown_ts)})")
@@ -138,6 +138,7 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             self.rampdown_ts,
         )
+        self.n_iterations += 1.5
         self.sleep()
         # Write zeros to the buffer
         print("Writing a buffer of zeros")
@@ -149,6 +150,7 @@ class WaveGen(QThread):
             daqmx.Val_GroupByChannel,
             np.zeros(self.buffsize),
         )
+        self.n_iterations += 1.5
         self.sleep()
         daqmx.StopTask(self.AOtaskHandle)
         daqmx.WaitUntilTaskDone(self.AOtaskHandle, timeout=10.0)
@@ -157,11 +159,21 @@ class WaveGen(QThread):
         self.rampeddown = True
 
     def sleep(self):
-        """Sleep between iterations."""
-        if self.wavetype == "Regular":
-            time.sleep(0.99 * self.period)
-        else:
-            time.sleep(0.99)  # Was self.period
+        """Sleep between iterations.
+
+        Our goal is to always stay ahead of the FIFO buffer being empty.
+        """
+        # Based on how long we've been running and how many iterations we've
+        # done, compute a time to sleep
+        t_total = time.time() - self.t_start
+        print("t_total:", t_total)
+        iteration_period = self.period if self.wavetype == "Regular" else 1.0
+        t_expected = iteration_period * self.n_iterations
+        print("t_expected:", t_expected)
+        sleeptime = t_expected - t_total - 0.2
+        if sleeptime > 0:
+            print("Sleeping", sleeptime, "seconds")
+            time.sleep(sleeptime)
 
     def stop(self):
         self.stopgen = WaveStop(self)

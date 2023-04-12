@@ -155,9 +155,13 @@ class MainWindow(QMainWindow):
         # Set default tab to regular waves
         self.ui.tabwidget.setCurrentIndex(0)
 
+        # Connect slots
+        self.connectslots()
+
         # Initialize slider values
         hmax = maxH[np.where(periods == np.round(1, decimals=2))[0]]
         self.ui.spinbox_wave_height.setMaximum(float(hmax))
+        self.ui.spinbox_wave_height.setValue(0.1)
         self.update_slider_height_value()
 
         # Initialize wavelength value
@@ -167,11 +171,12 @@ class MainWindow(QMainWindow):
             / wml.dispsolver(2 * np.pi / 1.0, water_depth, decimals=2)
         )
         self.ui.spinbox_wavelength.setValue(wl)
+        self.ui.spinbox_wave_period.setValue(1.0)
         self.update_slider_horiz_value()
+        self.update_slider_height_value()
 
         # Initialize plot settings
         self.initialize_plots()
-        self.connectslots()
         # Add dock widgets to right dock widget area and tabify them
         self.tabifyDockWidget(self.ui.dock_time_series, self.ui.dock_spectrum)
         self.on_rw_changed()
@@ -361,7 +366,7 @@ class MainWindow(QMainWindow):
         frac = (v - vmin) / (vmax - vmin)
         mi = self.ui.slider_horiz.minimum()
         mx = self.ui.slider_horiz.maximum()
-        self.ui.slider_height.setValue(int(mi + frac * (mx - mi)))
+        self.ui.slider_horiz.setValue(int(mi + frac * (mx - mi)))
 
     def on_regpars(self):
         """Decides which two parameters to use for regular waves"""
@@ -435,15 +440,15 @@ class MainWindow(QMainWindow):
             self.calcthread.start()
 
     def on_start(self):
+        """Make waves."""
         if self.ui.action_start.isChecked() == True:
-            """Make waves"""
             self.ui.action_start.setText("Stop ")
             self.ui.action_start.setToolTip("Stop Generating Waves")
             self.ui.action_start.setIcon(QIcon(":icons/agt_stop.png"))
             self.ui.tabwidget.setEnabled(False)
             wavetype = self.ui.tabwidget.currentIndex()
             if wavetype == 0:
-                """Create regular waves"""
+                # Create regular waves
                 self.slabel.setText("Generating regular waves... ")
                 self.period = self.ui.spinbox_wave_period.value()
                 self.height = self.ui.spinbox_wave_height.value()
@@ -455,7 +460,7 @@ class MainWindow(QMainWindow):
                 self.wavegen.start()
 
             elif wavetype == 1:
-                """Create random waves."""
+                # Create random waves
                 rspec = self.ui.combobox_randwavetype.currentText()
                 self.slabel.setText("Generating " + rspec + " waves... ")
                 self.wavegen = WaveGen(
@@ -474,9 +479,8 @@ class MainWindow(QMainWindow):
                     ].value()
                 self.wavegen.start()
             self.timer.start(500)
-
         elif self.ui.action_start.isChecked() == False:
-            """Stop making waves"""
+            # Stop making waves
             self.slabel.setText("Stopping... ")
             self.wavegen.stop()
             self.wavegen.stopgen.finished.connect(self.on_wave_finished)
