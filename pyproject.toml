@@ -1,0 +1,29 @@
+[project]
+name = "makewaves"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Pete Bachant", email = "petebachant@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "daqmx",
+    "h5py>=3.13.0",
+    "numpy>=2.2.4",
+    "pandas>=2.2.3",
+    "pyqt5==5.15.11",
+    "pyqt5-qt5==5.15.2",
+    "pythonqwt>=0.14.4",
+    "pywin32>=310",
+]
+
+[project.scripts]
+makewaves = "makewaves:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+daqmx = { git = "https://github.com/petebachant/daqmx" }
