@@ -7,13 +7,16 @@ ui:
 	@bash scripts/makeui.sh
 
 build:
-	@uv run pyinstaller makewaves/makewaves.py \
+	@uv run pyinstaller scripts/makewaves-script.py \
 	--onedir \
 	--noconsole \
+	--noconfirm \
 	--name makewaves \
-	--add-data "makewaves/settings:settings" \
-	--add-data "makewaves/icons:icons" \
+	--hidden-import makewaves \
+	--paths ./makewaves \
+	--add-data "makewaves/settings:makewaves/settings" \
+	--add-data "makewaves/icons:makewaves/icons" \
 	--icon makewaves/icons/makewaves_icon.ico
 
-shortcut:
+shortcut: build
 	@uv run scripts/create_shortcut.py
