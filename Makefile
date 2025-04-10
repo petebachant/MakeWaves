@@ -12,8 +12,6 @@ build:
 	--noconsole \
 	--noconfirm \
 	--name makewaves \
-	--hidden-import makewaves \
-	--paths ./makewaves \
 	--add-data "makewaves/settings:makewaves/settings" \
 	--add-data "makewaves/icons:makewaves/icons" \
 	--icon makewaves/icons/makewaves_icon.ico
