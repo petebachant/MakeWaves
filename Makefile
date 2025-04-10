@@ -1,13 +1,20 @@
-.PHONY: run ui
-
+.PHONY: run ui shortcut build
 
 run:
-	@winpty python -c "import makewaves; makewaves.main()"
-
+	@uv run makewaves
 
 ui:
-	@bash scripts/makeui.sh
+	@uv run bash scripts/makeui.sh
 
+build:
+	@uv run pyinstaller scripts/makewaves-script.py \
+	--onedir \
+	--noconsole \
+	--noconfirm \
+	--name makewaves \
+	--add-data "makewaves/settings:makewaves/settings" \
+	--add-data "makewaves/icons:makewaves/icons" \
+	--icon makewaves/icons/makewaves_icon.ico
 
-shortcut:
-	@python scripts/create_shortcut.py
+shortcut: build
+	@uv run scripts/create_shortcut.py

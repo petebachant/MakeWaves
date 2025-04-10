@@ -2,30 +2,22 @@
 """Creates Windows shortcut."""
 
 import os
-import sys
 
 from win32com.client import Dispatch
 
-python_dir = os.path.split(sys.executable)[0]
 shortcut_path = "MakeWaves.lnk"
-pythonw_path = os.path.join(python_dir, "pythonw.exe")
-makewaves_path = os.path.join(python_dir, "Scripts", "makewaves-script.py")
-wdir = r"C:\temp"
+this_dir = os.path.dirname(os.path.abspath(__file__))
+wdir = os.path.dirname(this_dir)
 icon = os.path.join(
-    python_dir,
-    "Lib",
-    "site-packages",
+    wdir,
     "makewaves",
     "icons",
     "makewaves_icon.ico",
 )
-target_path = "{} {}".format(pythonw_path, makewaves_path)
-print(target_path)
-
+exe = os.path.join(wdir, "dist", "makewaves", "makewaves.exe")
 shell = Dispatch("WScript.shell")
 shortcut = shell.CreateShortCut(shortcut_path)
-shortcut.Targetpath = pythonw_path
-shortcut.Arguments = makewaves_path
+shortcut.Targetpath = exe
 shortcut.WorkingDirectory = wdir
 shortcut.IconLocation = icon
 shortcut.save()

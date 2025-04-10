@@ -191,5 +191,4 @@ class WaveStop(QThread):
         while not self.wavegen.rampeddown:
             time.sleep(0.2)
 
-        daqmx.ClearTask(self.wavegen.AOtaskHandle)
         self.wavegen.cleared = True
