@@ -1,7 +1,5 @@
 """MakeWaves main application."""
 
-from __future__ import absolute_import, division, print_function
-
 import json
 import os
 import platform
@@ -25,9 +23,8 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
-from makewaves import __version__
+import makewaves.wavemakerlimits as wml
 
-from . import wavemakerlimits as wml
 from .mainwindow import *
 from .waveio import WaveGen
 from .wavetsgen import Wave
@@ -497,6 +494,8 @@ class MainWindow(QMainWindow):
         self.ui.tabwidget.setEnabled(True)
 
     def on_about(self):
+        from makewaves import __version__
+
         about_text = "<b>MakeWaves v{}</b><br>".format(__version__)
         about_text += "A wavemaking app for the UNH tow/wave tank<br><br>"
         about_text += "Created by Pete Bachant (petebachant@gmail.com)<br>"
