@@ -1,7 +1,7 @@
 [project]
-name = "makewaves"
+name = "MakeWaves"
 dynamic = ["version"]
-description = "Add your description here"
+description = "An application for controlling the UNH wavemaker."
 readme = "README.md"
 authors = [
     { name = "Pete Bachant", email = "petebachant@gmail.com" }
@@ -27,6 +27,9 @@ build-backend = "hatchling.build"
 
 [tool.uv.sources]
 daqmx = { git = "https://github.com/petebachant/daqmx" }
+
+[tool.hatch.build.targets.wheel]
+packages = ["makewaves"]
 
 [tool.hatch.version]
 path = "makewaves/__init__.py"
