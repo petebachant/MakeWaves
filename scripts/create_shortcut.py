@@ -14,10 +14,10 @@ icon = os.path.join(
     "icons",
     "makewaves_icon.ico",
 )
+exe = os.path.join(wdir, "dist", "makewaves", "makewaves.exe")
 shell = Dispatch("WScript.shell")
 shortcut = shell.CreateShortCut(shortcut_path)
-shortcut.Targetpath = "uv"
-shortcut.Arguments = f"run --directory \"{wdir}\" makewaves"
+shortcut.Targetpath = exe
 shortcut.WorkingDirectory = wdir
 shortcut.IconLocation = icon
 shortcut.save()
