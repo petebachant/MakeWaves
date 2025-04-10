@@ -13,7 +13,7 @@ flap-style wavemaker.
    1. [Miniforge Python](https://conda-forge.org/miniforge/)
       (skip this step if you already have `conda` or `installed).
    1. `make` (Recommend installing with Chocolatey on Windows).
-   1. [uv](https://docs.astral.sh/uv/#installation)
+   1. [uv](https://docs.astral.sh/uv/#installation).
 2. Clone this repository locally
    (`git clone https://github.com/petebachant/MakeWaves.git makewaves`).
 3. Move into the repository directory and execute `make` to run the app in
