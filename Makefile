@@ -4,7 +4,7 @@ run:
 	@uv run makewaves
 
 ui:
-	@bash scripts/makeui.sh
+	@uv run bash scripts/makeui.sh
 
 build:
 	@uv run pyinstaller scripts/makewaves-script.py \
